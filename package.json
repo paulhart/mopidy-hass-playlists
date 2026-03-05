@@ -1,0 +1,35 @@
+{
+  "name": "mopidy-hass-playlists",
+  "version": "1.0.0",
+  "description": "Custom Home Assistant Lovelace card for managing Mopidy playlists",
+  "type": "module",
+  "main": "dist/mopidy-playlist-card.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "mopidy",
+    "playlist",
+    "media-player"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "lit": "^3.1.0",
+    "sortablejs": "^1.15.2"
+  },
+  "devDependencies": {
+    "@types/sortablejs": "^1.15.8",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
