@@ -130,11 +130,12 @@ export class MopidyService {
             if (playlistsResult.children) {
               log('Found', playlistsResult.children.length, 'items in playlists container');
               for (const playlist of playlistsResult.children) {
-                log('Adding playlist:', playlist.title, 'uri:', playlist.media_content_id);
+                log('Adding playlist:', playlist.title, 'uri:', playlist.media_content_id, 'contentType:', playlist.media_content_type);
                 playlists.push({
                   uri: playlist.media_content_id || '',
                   name: playlist.title,
                   trackCount: 0, // Will be populated on detail view
+                  mediaContentType: playlist.media_content_type,
                 });
               }
             }
@@ -155,10 +156,10 @@ export class MopidyService {
   /**
    * Get a specific playlist with track details
    */
-  async getPlaylist(uri: string): Promise<PlaylistDetail | null> {
-    log('getPlaylist called with uri:', uri);
+  async getPlaylist(uri: string, mediaContentType?: string): Promise<PlaylistDetail | null> {
+    log('getPlaylist called with uri:', uri, 'mediaContentType:', mediaContentType);
     try {
-      const result = await this.browseMedia(uri);
+      const result = await this.browseMedia(uri, mediaContentType);
       log('Playlist browse result:', result);
       
       const tracks: Track[] = [];

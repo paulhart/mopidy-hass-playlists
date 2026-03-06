@@ -4,6 +4,18 @@ import { sharedStyles, formatTotalDuration } from '../styles/shared-styles';
 import type { PlaylistDetail as PlaylistDetailModel, Track } from '../models/playlist';
 import Sortable from 'sortablejs';
 
+const DEBUG = true;
+
+function log(...args: unknown[]) {
+  if (DEBUG) {
+    console.log('[PlaylistDetail]', ...args);
+  }
+}
+
+function logError(...args: unknown[]) {
+  console.error('[PlaylistDetail]', ...args);
+}
+
 /**
  * Playlist detail component - displays tracks in a playlist with drag-drop reordering
  */
@@ -109,6 +121,15 @@ export class PlaylistDetailComponent extends LitElement {
       text-align: center;
       background-color: var(--secondary-background-color);
     }
+
+    .error {
+      padding: 16px;
+      text-align: center;
+    }
+
+    .error-actions {
+      margin-top: 16px;
+    }
   `];
 
   @property({ type: Object }) playlist: PlaylistDetailModel | null = null;
@@ -124,10 +145,18 @@ export class PlaylistDetailComponent extends LitElement {
   protected updated(changedProperties: PropertyValues) {
     super.updated(changedProperties);
     
-    if (changedProperties.has('playlist') && this.playlist) {
-      this._tracks = [...this.playlist.tracks];
-      this._hasChanges = false;
-      this._initSortable();
+    log('updated() called, changed properties:', [...changedProperties.keys()]);
+    
+    if (changedProperties.has('playlist')) {
+      log('playlist changed:', this.playlist);
+      if (this.playlist) {
+        log('Setting _tracks to', this.playlist.tracks.length, 'tracks');
+        this._tracks = [...this.playlist.tracks];
+        this._hasChanges = false;
+        this._initSortable();
+      } else {
+        log('playlist is null');
+      }
     }
   }
 
@@ -137,6 +166,7 @@ export class PlaylistDetailComponent extends LitElement {
     }
 
     if (this._trackList) {
+      log('Initializing Sortable on track list');
       this._sortable = new Sortable(this._trackList, {
         handle: '[data-drag-handle]',
         animation: 150,
@@ -152,6 +182,7 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   private _onReorder(oldIndex: number, newIndex: number) {
+    log('Reorder track from', oldIndex, 'to', newIndex);
     const tracks = [...this._tracks];
     const [movedTrack] = tracks.splice(oldIndex, 1);
     tracks.splice(newIndex, 0, movedTrack);
@@ -173,6 +204,7 @@ export class PlaylistDetailComponent extends LitElement {
 
   private _onRemoveTrack(e: CustomEvent) {
     const { index } = e.detail;
+    log('Remove track at index', index);
     const tracks = [...this._tracks];
     tracks.splice(index, 1);
     
@@ -193,6 +225,7 @@ export class PlaylistDetailComponent extends LitElement {
 
   private _onPlayTrack(e: CustomEvent) {
     const { track } = e.detail;
+    log('Play track:', track);
     this.dispatchEvent(new CustomEvent('play-track', {
       detail: { track },
       bubbles: true,
@@ -201,6 +234,7 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   private _onBack() {
+    log('Back button clicked');
     this.dispatchEvent(new CustomEvent('back', {
       bubbles: true,
       composed: true,
@@ -208,6 +242,7 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   private _onDeletePlaylist() {
+    log('Delete playlist clicked');
     this.dispatchEvent(new CustomEvent('delete-playlist', {
       detail: { playlist: this.playlist },
       bubbles: true,
@@ -216,6 +251,7 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   private _onPlayAll() {
+    log('Play all clicked');
     this.dispatchEvent(new CustomEvent('play-playlist', {
       detail: { playlist: this.playlist },
       bubbles: true,
@@ -224,6 +260,7 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   private _onSaveChanges() {
+    log('Save changes clicked');
     this.dispatchEvent(new CustomEvent('save-changes', {
       detail: { playlist: this.playlist, tracks: this._tracks },
       bubbles: true,
@@ -232,6 +269,7 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   private _onAddTracks() {
+    log('Add tracks clicked');
     this.dispatchEvent(new CustomEvent('add-tracks', {
       detail: { playlist: this.playlist },
       bubbles: true,
@@ -241,6 +279,7 @@ export class PlaylistDetailComponent extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    log('disconnectedCallback()');
     if (this._sortable) {
       this._sortable.destroy();
       this._sortable = null;
@@ -248,7 +287,10 @@ export class PlaylistDetailComponent extends LitElement {
   }
 
   render() {
+    log('render() called, loading:', this.loading, 'playlist:', this.playlist ? 'present' : 'null');
+    
     if (this.loading) {
+      log('Rendering loading state');
       return html`
         <div class="loading">
           <ha-circular-progress active></ha-circular-progress>
@@ -257,15 +299,25 @@ export class PlaylistDetailComponent extends LitElement {
     }
 
     if (!this.playlist) {
+      logError('Rendering error state - playlist is null');
       return html`
         <div class="error">
+          <ha-icon icon="mdi:playlist-remove" style="--mdc-icon-size: 48px; color: var(--error-color);"></ha-icon>
           <p>Playlist not found</p>
+          <p style="font-size: 0.85em; color: var(--secondary-text-color);">The playlist may have been deleted or is unavailable.</p>
+          <div class="error-actions">
+            <mwc-button @click=${this._onBack}>
+              <ha-icon icon="mdi:arrow-left"></ha-icon>
+              Back to Playlists
+            </mwc-button>
+          </div>
         </div>
       `;
     }
 
     const trackCount = this._tracks.length;
     const totalDuration = this._tracks.reduce((sum, t) => sum + (t.duration || 0), 0);
+    log('Rendering playlist with', trackCount, 'tracks');
 
     return html`
       <div class="header">

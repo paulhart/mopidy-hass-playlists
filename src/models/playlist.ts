@@ -10,6 +10,8 @@ export interface Playlist {
   trackCount?: number;
   /** Last modification timestamp */
   lastModified?: string;
+  /** Media content type for browsing - needed to browse playlist details */
+  mediaContentType?: string;
 }
 
 /**

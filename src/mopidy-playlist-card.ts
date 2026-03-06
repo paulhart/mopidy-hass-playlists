@@ -234,13 +234,13 @@ export class MopidyPlaylistCard extends LitElement {
     }
   }
 
-  private async _loadPlaylistDetail(uri: string) {
-    log('_loadPlaylistDetail called with uri:', uri);
+  private async _loadPlaylistDetail(playlist: Playlist) {
+    log('_loadPlaylistDetail called with playlist:', playlist);
     if (!this._service) return;
     
     this._loading = true;
     try {
-      this._selectedPlaylist = await this._service.getPlaylist(uri);
+      this._selectedPlaylist = await this._service.getPlaylist(playlist.uri, playlist.mediaContentType);
       log('Playlist detail loaded:', this._selectedPlaylist);
       this._view = 'detail';
       log('View changed to detail');
@@ -333,7 +333,7 @@ export class MopidyPlaylistCard extends LitElement {
   private _onSelectPlaylist(e: CustomEvent) {
     const { playlist } = e.detail;
     log('_onSelectPlaylist:', playlist);
-    this._loadPlaylistDetail(playlist.uri);
+    this._loadPlaylistDetail(playlist);
   }
 
   private _onBackToList() {
@@ -430,7 +430,7 @@ export class MopidyPlaylistCard extends LitElement {
       await this._service?.addToPlaylist(this._selectedPlaylist.uri, [track.uri]);
       this._showToast(`Added "${track.name}"`);
       // Reload playlist
-      await this._loadPlaylistDetail(this._selectedPlaylist.uri);
+      await this._loadPlaylistDetail(this._selectedPlaylist);
     } catch (error) {
       logError('Error adding track:', error);
       this._showToast('Failed to add track');
