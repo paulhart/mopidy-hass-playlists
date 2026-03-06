@@ -262,12 +262,12 @@ Mt.elementStyles = [], Mt.shadowRootOptions = { mode: "open" }, Mt[Jt("elementPr
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Je = globalThis, fi = (o) => o, Se = Je.trustedTypes, mi = Se ? Se.createPolicy("lit-html", { createHTML: (o) => o }) : void 0, Ti = "$lit$", pt = `lit$${Math.random().toFixed(9).slice(2)}$`, Oi = "?" + pt, so = `<${Oi}>`, At = document, ae = () => At.createComment(""), ne = (o) => o === null || typeof o != "object" && typeof o != "function", ti = Array.isArray, lo = (o) => ti(o) || typeof o?.[Symbol.iterator] == "function", Ne = `[ 	
-\f\r]`, Wt = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, gi = /-->/g, yi = />/g, xt = RegExp(`>|${Ne}(?:([^\\s"'>=/]+)(${Ne}*=${Ne}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), vi = /'/g, _i = /"/g, Ii = /^(?:script|style|textarea|title)$/i, co = (o) => (t, ...e) => ({ _$litType$: o, strings: t, values: e }), g = co(1), Ft = Symbol.for("lit-noChange"), T = Symbol.for("lit-nothing"), bi = /* @__PURE__ */ new WeakMap(), kt = At.createTreeWalker(At, 129);
+const Je = globalThis, fi = (o) => o, Se = Je.trustedTypes, gi = Se ? Se.createPolicy("lit-html", { createHTML: (o) => o }) : void 0, Ti = "$lit$", pt = `lit$${Math.random().toFixed(9).slice(2)}$`, Oi = "?" + pt, so = `<${Oi}>`, At = document, ae = () => At.createComment(""), ne = (o) => o === null || typeof o != "object" && typeof o != "function", ti = Array.isArray, lo = (o) => ti(o) || typeof o?.[Symbol.iterator] == "function", Ne = `[ 	
+\f\r]`, Wt = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, mi = /-->/g, yi = />/g, xt = RegExp(`>|${Ne}(?:([^\\s"'>=/]+)(${Ne}*=${Ne}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), vi = /'/g, _i = /"/g, Ii = /^(?:script|style|textarea|title)$/i, co = (o) => (t, ...e) => ({ _$litType$: o, strings: t, values: e }), m = co(1), Ft = Symbol.for("lit-noChange"), T = Symbol.for("lit-nothing"), bi = /* @__PURE__ */ new WeakMap(), kt = At.createTreeWalker(At, 129);
 function Ni(o, t) {
   if (!ti(o) || !o.hasOwnProperty("raw")) throw Error("invalid template strings array");
-  return mi !== void 0 ? mi.createHTML(t) : t;
+  return gi !== void 0 ? gi.createHTML(t) : t;
 }
 const ho = (o, t) => {
   const e = o.length - 1, i = [];
@@ -275,7 +275,7 @@ const ho = (o, t) => {
   for (let s = 0; s < e; s++) {
     const l = o[s];
     let c, u, d = -1, y = 0;
-    for (; y < l.length && (n.lastIndex = y, u = n.exec(l), u !== null); ) y = n.lastIndex, n === Wt ? u[1] === "!--" ? n = gi : u[1] !== void 0 ? n = yi : u[2] !== void 0 ? (Ii.test(u[2]) && (r = RegExp("</" + u[2], "g")), n = xt) : u[3] !== void 0 && (n = xt) : n === xt ? u[0] === ">" ? (n = r ?? Wt, d = -1) : u[1] === void 0 ? d = -2 : (d = n.lastIndex - u[2].length, c = u[1], n = u[3] === void 0 ? xt : u[3] === '"' ? _i : vi) : n === _i || n === vi ? n = xt : n === gi || n === yi ? n = Wt : (n = xt, r = void 0);
+    for (; y < l.length && (n.lastIndex = y, u = n.exec(l), u !== null); ) y = n.lastIndex, n === Wt ? u[1] === "!--" ? n = mi : u[1] !== void 0 ? n = yi : u[2] !== void 0 ? (Ii.test(u[2]) && (r = RegExp("</" + u[2], "g")), n = xt) : u[3] !== void 0 && (n = xt) : n === xt ? u[0] === ">" ? (n = r ?? Wt, d = -1) : u[1] === void 0 ? d = -2 : (d = n.lastIndex - u[2].length, c = u[1], n = u[3] === void 0 ? xt : u[3] === '"' ? _i : vi) : n === _i || n === vi ? n = xt : n === mi || n === yi ? n = Wt : (n = xt, r = void 0);
     const w = n === xt && o[s + 1].startsWith("/>") ? " " : "";
     a += n === Wt ? l + so : d >= 0 ? (i.push(c), l.slice(0, d) + Ti + l.slice(d) + pt + w) : l + pt + (d === -2 ? s : w);
   }
@@ -295,7 +295,7 @@ class se {
       if (r.nodeType === 1) {
         if (r.hasAttributes()) for (const d of r.getAttributeNames()) if (d.endsWith(Ti)) {
           const y = u[n++], w = r.getAttribute(d).split(pt), b = /([.?@])?(.*)/.exec(y);
-          l.push({ type: 1, index: a, name: b[2], strings: w, ctor: b[1] === "." ? po : b[1] === "?" ? fo : b[1] === "@" ? mo : Oe }), r.removeAttribute(d);
+          l.push({ type: 1, index: a, name: b[2], strings: w, ctor: b[1] === "." ? po : b[1] === "?" ? fo : b[1] === "@" ? go : Oe }), r.removeAttribute(d);
         } else d.startsWith(pt) && (l.push({ type: 6, index: a }), r.removeAttribute(d));
         if (Ii.test(r.tagName)) {
           const d = r.textContent.split(pt), y = d.length - 1;
@@ -341,7 +341,7 @@ class uo {
     for (; l !== void 0; ) {
       if (n === l.index) {
         let c;
-        l.type === 2 ? c = new de(a, a.nextSibling, this, t) : l.type === 1 ? c = new l.ctor(a, l.name, l.strings, this, t) : l.type === 6 && (c = new go(a, this, t)), this._$AV.push(c), l = i[++s];
+        l.type === 2 ? c = new de(a, a.nextSibling, this, t) : l.type === 1 ? c = new l.ctor(a, l.name, l.strings, this, t) : l.type === 6 && (c = new mo(a, this, t)), this._$AV.push(c), l = i[++s];
       }
       n !== l?.index && (a = kt.nextNode(), n++);
     }
@@ -452,7 +452,7 @@ class fo extends Oe {
     this.element.toggleAttribute(this.name, !!t && t !== T);
   }
 }
-class mo extends Oe {
+class go extends Oe {
   constructor(t, e, i, r, a) {
     super(t, e, i, r, a), this.type = 5;
   }
@@ -465,7 +465,7 @@ class mo extends Oe {
     typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, t) : this._$AH.handleEvent(t);
   }
 }
-class go {
+class mo {
   constructor(t, e, i) {
     this.element = t, this.type = 6, this._$AN = void 0, this._$AM = e, this.options = i;
   }
@@ -566,7 +566,7 @@ function S(o) {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function M(o) {
+function N(o) {
   return S({ ...o, state: !0, attribute: !1 });
 }
 /**
@@ -834,7 +834,7 @@ const vt = lt`
     }
   }
 `;
-function Ue(o) {
+function Le(o) {
   if (o == null) return "--:--";
   const t = Math.floor(o / 3600), e = Math.floor(o % 3600 / 60), i = Math.floor(o % 60);
   return t > 0 ? `${t}:${e.toString().padStart(2, "0")}:${i.toString().padStart(2, "0")}` : `${e}:${i.toString().padStart(2, "0")}`;
@@ -1149,19 +1149,19 @@ let le = class extends X {
     }));
   }
   render() {
-    return Et("render() called, loading:", this.loading, "playlists count:", this.playlists.length), this.loading ? (Et("Rendering loading state"), g`
+    return Et("render() called, loading:", this.loading, "playlists count:", this.playlists.length), this.loading ? (Et("Rendering loading state"), m`
         <div class="loading">
           <ha-circular-progress active></ha-circular-progress>
         </div>
-      `) : this.playlists.length === 0 ? (Et("Rendering empty state - no playlists"), g`
+      `) : this.playlists.length === 0 ? (Et("Rendering empty state - no playlists"), m`
         <div class="empty-state">
           <ha-icon icon="mdi:playlist-music"></ha-icon>
           <p>No playlists found</p>
           <p>Create a new playlist to get started</p>
         </div>
-      `) : (Et("Rendering", this.playlists.length, "playlists"), g`
+      `) : (Et("Rendering", this.playlists.length, "playlists"), m`
       <div class="list">
-        ${this.playlists.map((o) => g`
+        ${this.playlists.map((o) => m`
           <div class="playlist-item" @click=${() => this._onPlaylistClick(o)}>
             <div class="playlist-icon">
               <ha-icon icon="mdi:playlist-music"></ha-icon>
@@ -1496,11 +1496,11 @@ function D(o, t, e, i, r) {
   }
 }
 function Ei(o, t, e) {
-  for (var i = mt(o, !0), r = D(o)[t]; i; ) {
+  for (var i = gt(o, !0), r = D(o)[t]; i; ) {
     var a = D(i)[e], n = void 0;
     if (n = r >= a, !n) return i;
     if (i === J()) break;
-    i = mt(i, !1);
+    i = gt(i, !1);
   }
   return !1;
 }
@@ -1520,7 +1520,7 @@ function ai(o, t) {
     e = e.previousElementSibling;
   return e || null;
 }
-function U(o, t) {
+function L(o, t) {
   var e = 0;
   if (!o || !o.parentNode)
     return -1;
@@ -1545,7 +1545,7 @@ function Io(o, t) {
     }
   return -1;
 }
-function mt(o, t) {
+function gt(o, t) {
   if (!o || !o.getBoundingClientRect) return J();
   var e = o, i = !1;
   do
@@ -1725,9 +1725,9 @@ function Fo(o) {
       bubbles: !0,
       cancelable: !0
     }) : (E = document.createEvent("Event"), E.initEvent(i, !0, !0)), E.to = n || e, E.from = s || e, E.item = r || e, E.clone = a, E.oldIndex = l, E.newIndex = c, E.oldDraggableIndex = u, E.newDraggableIndex = d, E.originalEvent = y, E.pullMode = w ? w.lastPutMode : void 0;
-    var R = tt(tt({}, b), ue.getEventProperties(i, t));
-    for (var W in R)
-      E[W] = R[W];
+    var M = tt(tt({}, b), ue.getEventProperties(i, t));
+    for (var W in M)
+      E[W] = M[W];
     e && e.dispatchEvent(E), Q[it] && Q[it].call(t, E);
   }
 }
@@ -1748,7 +1748,7 @@ var zo = ["evt"], q = function(t, e) {
     originalEvent: r,
     oldIndex: jt,
     oldDraggableIndex: ie,
-    newIndex: L,
+    newIndex: U,
     newDraggableIndex: ut,
     hideGhostForTarget: Yi,
     unhideGhostForTarget: Qi,
@@ -1759,7 +1759,7 @@ var zo = ["evt"], q = function(t, e) {
       ft = !1;
     },
     dispatchSortableEvent: function(s) {
-      j({
+      R({
         sortable: e,
         name: s,
         originalEvent: r
@@ -1767,7 +1767,7 @@ var zo = ["evt"], q = function(t, e) {
     }
   }, a));
 };
-function j(o) {
+function R(o) {
   Fo(tt({
     putSortable: O,
     cloneEl: P,
@@ -1775,18 +1775,18 @@ function j(o) {
     rootEl: C,
     oldIndex: jt,
     oldDraggableIndex: ie,
-    newIndex: L,
+    newIndex: U,
     newDraggableIndex: ut
   }, o));
 }
-var h, k, v, C, Pt, be, P, ft, jt, L, ie, ut, me, O, Rt = !1, Pe = !1, ke = [], St, G, je, qe, Ci, Pi, Vt, Nt, oe, re = !1, ge = !1, we, I, Fe = [], Ye = !1, Ae = [], Ie = typeof document < "u", ye = ri, ki = he || ct ? "cssFloat" : "float", Bo = Ie && !Mi && !ri && "draggable" in document.createElement("div"), Li = function() {
+var h, k, v, C, Pt, be, P, ft, jt, U, ie, ut, ge, O, Rt = !1, Pe = !1, ke = [], St, G, je, qe, Ci, Pi, Vt, Nt, oe, re = !1, me = !1, we, I, Fe = [], Ye = !1, Ae = [], Ie = typeof document < "u", ye = ri, ki = he || ct ? "cssFloat" : "float", Bo = Ie && !Mi && !ri && "draggable" in document.createElement("div"), Ui = function() {
   if (Ie) {
     if (ct)
       return !1;
     var o = document.createElement("x");
     return o.style.cssText = "pointer-events:auto", o.style.pointerEvents === "auto";
   }
-}(), Ui = function(t, e) {
+}(), Li = function(t, e) {
   var i = p(t), r = parseInt(i.width) - parseInt(i.paddingLeft) - parseInt(i.paddingRight) - parseInt(i.borderLeftWidth) - parseInt(i.borderRightWidth), a = Bt(t, 0, e), n = Bt(t, 1, e), s = a && p(a), l = n && p(n), c = s && parseInt(s.marginLeft) + parseInt(s.marginRight) + D(a).width, u = l && parseInt(l.marginLeft) + parseInt(l.marginRight) + D(n).width;
   if (i.display === "flex")
     return i.flexDirection === "column" || i.flexDirection === "column-reverse" ? "vertical" : "horizontal";
@@ -1800,7 +1800,7 @@ var h, k, v, C, Pt, be, P, ft, jt, L, ie, ut, me, O, Rt = !1, Pe = !1, ke = [], 
 }, Ho = function(t, e, i) {
   var r = i ? t.left : t.top, a = i ? t.right : t.bottom, n = i ? t.width : t.height, s = i ? e.left : e.top, l = i ? e.right : e.bottom, c = i ? e.width : e.height;
   return r === s || a === l || r + n / 2 === s + c / 2;
-}, Lo = function(t, e) {
+}, Uo = function(t, e) {
   var i;
   return ke.some(function(r) {
     var a = r[F].options.emptyInsertThreshold;
@@ -1831,9 +1831,9 @@ var h, k, v, C, Pt, be, P, ft, jt, L, ie, ut, me, O, Rt = !1, Pe = !1, ke = [], 
     name: r
   }), i.name = r.name, i.checkPull = e(r.pull, !0), i.checkPut = e(r.put), i.revertClone = r.revertClone, t.group = i;
 }, Yi = function() {
-  !Li && v && p(v, "display", "none");
+  !Ui && v && p(v, "display", "none");
 }, Qi = function() {
-  !Li && v && p(v, "display", "");
+  !Ui && v && p(v, "display", "");
 };
 Ie && !Mi && document.addEventListener("click", function(o) {
   if (Pe)
@@ -1842,7 +1842,7 @@ Ie && !Mi && document.addEventListener("click", function(o) {
 var Ct = function(t) {
   if (h) {
     t = t.touches ? t.touches[0] : t;
-    var e = Lo(t.clientX, t.clientY);
+    var e = Uo(t.clientX, t.clientY);
     if (e) {
       var i = {};
       for (var r in t)
@@ -1850,7 +1850,7 @@ var Ct = function(t) {
       i.target = i.rootEl = e, i.preventDefault = void 0, i.stopPropagation = void 0, e[F]._onDragOver(i);
     }
   }
-}, Uo = function(t) {
+}, Lo = function(t) {
   h && h.parentNode[F]._isOutsideThisEl(t.target);
 };
 function f(o, t) {
@@ -1872,7 +1872,7 @@ function f(o, t) {
     // will be set to same as swapThreshold if default
     removeCloneOnHide: !0,
     direction: function() {
-      return Ui(o, this.options);
+      return Li(o, this.options);
     },
     ghostClass: "sortable-ghost",
     chosenClass: "sortable-chosen",
@@ -1924,9 +1924,9 @@ f.prototype = /** @lends Sortable.prototype */
     if (t.cancelable) {
       var e = this, i = this.el, r = this.options, a = r.preventOnFilter, n = t.type, s = t.touches && t.touches[0] || t.pointerType && t.pointerType === "touch" && t, l = (s || t).target, c = t.target.shadowRoot && (t.path && t.path[0] || t.composedPath && t.composedPath()[0]) || l, u = r.filter;
       if (Zo(i), !h && !(/mousedown|pointerdown/.test(n) && t.button !== 0 || r.disabled) && !c.isContentEditable && !(!this.nativeDraggable && te && l && l.tagName.toUpperCase() === "SELECT") && (l = K(l, r.draggable, i, !1), !(l && l.animated) && be !== l)) {
-        if (jt = U(l), ie = U(l, r.draggable), typeof u == "function") {
+        if (jt = L(l), ie = L(l, r.draggable), typeof u == "function") {
           if (u.call(this, t, l, this)) {
-            j({
+            R({
               sortable: e,
               rootEl: c,
               name: "filter",
@@ -1940,7 +1940,7 @@ f.prototype = /** @lends Sortable.prototype */
           }
         } else if (u && (u = u.split(",").some(function(d) {
           if (d = K(c, d.trim(), i, !1), d)
-            return j({
+            return R({
               sortable: e,
               rootEl: d,
               name: "filter",
@@ -1962,7 +1962,7 @@ f.prototype = /** @lends Sortable.prototype */
     var r = this, a = r.el, n = r.options, s = a.ownerDocument, l;
     if (i && !h && i.parentNode === a) {
       var c = D(i);
-      if (C = a, h = i, k = h.parentNode, Pt = h.nextSibling, be = i, me = n.group, f.dragged = h, St = {
+      if (C = a, h = i, k = h.parentNode, Pt = h.nextSibling, be = i, ge = n.group, f.dragged = h, St = {
         target: h,
         clientX: (e || t).clientX,
         clientY: (e || t).clientY
@@ -1973,7 +1973,7 @@ f.prototype = /** @lends Sortable.prototype */
           r._onDrop();
           return;
         }
-        r._disableDelayedDragEvents(), !$i && r.nativeDraggable && (h.draggable = !0), r._triggerDragStart(t, e), j({
+        r._disableDelayedDragEvents(), !$i && r.nativeDraggable && (h.draggable = !0), r._triggerDragStart(t, e), R({
           sortable: r,
           name: "choose",
           originalEvent: t
@@ -2016,9 +2016,9 @@ f.prototype = /** @lends Sortable.prototype */
     if (Rt = !1, C && h) {
       q("dragStarted", this, {
         evt: e
-      }), this.nativeDraggable && x(document, "dragover", Uo);
+      }), this.nativeDraggable && x(document, "dragover", Lo);
       var i = this.options;
-      !t && H(h, i.dragClass, !1), H(h, i.ghostClass, !0), f.active = this, t && this._appendGhost(), j({
+      !t && H(h, i.dragClass, !1), H(h, i.ghostClass, !0), f.active = this, t && this._appendGhost(), R({
         sortable: this,
         name: "start",
         originalEvent: e
@@ -2091,7 +2091,7 @@ f.prototype = /** @lends Sortable.prototype */
       return;
     }
     q("setupClone", this), f.eventCanceled || (P = Bi(h), P.removeAttribute("id"), P.draggable = !1, P.style["will-change"] = "", this._hideClone(), H(P, this.options.chosenClass, !1), f.clone = P), i.cloneId = $e(function() {
-      q("clone", i), !f.eventCanceled && (i.options.removeCloneOnHide || C.insertBefore(P, h), i._hideClone(), j({
+      q("clone", i), !f.eventCanceled && (i.options.removeCloneOnHide || C.insertBefore(P, h), i._hideClone(), R({
         sortable: i,
         name: "clone"
       }));
@@ -2099,7 +2099,7 @@ f.prototype = /** @lends Sortable.prototype */
   },
   // Returns true - if no further action is needed (either inserted or another condition)
   _onDragOver: function(t) {
-    var e = this.el, i = t.target, r, a, n, s = this.options, l = s.group, c = f.active, u = me === l, d = s.sort, y = O || c, w, b = this, E = !1;
+    var e = this.el, i = t.target, r, a, n, s = this.options, l = s.group, c = f.active, u = ge === l, d = s.sort, y = O || c, w, b = this, E = !1;
     if (Ye) return;
     function Q(Qt, Gi) {
       q(Qt, b, tt({
@@ -2112,7 +2112,7 @@ f.prototype = /** @lends Sortable.prototype */
         canSort: d,
         fromSortable: y,
         target: i,
-        completed: R,
+        completed: M,
         onMove: function(ci, Vi) {
           return ve(C, e, h, r, ci, D(ci), t, Vi);
         },
@@ -2122,7 +2122,7 @@ f.prototype = /** @lends Sortable.prototype */
     function it() {
       Q("dragOverAnimationCapture"), b.captureAnimationState(), b !== y && y.captureAnimationState();
     }
-    function R(Qt) {
+    function M(Qt) {
       return Q("dragOverCompleted", {
         insertion: Qt
       }), Qt && (u ? c._hideClone() : c._showClone(b), b !== y && (H(h, O ? O.options.ghostClass : c.options.ghostClass, !1), H(h, s.ghostClass, !0)), O !== b && b !== f.active ? O = b : b === f.active && O && (O = null), y === b && (b._ignoreWhileAnimating = i), b.animateAll(function() {
@@ -2130,56 +2130,56 @@ f.prototype = /** @lends Sortable.prototype */
       }), b !== y && (y.animateAll(), y._ignoreWhileAnimating = null)), (i === h && !h.animated || i === e && !i.animated) && (Nt = null), !s.dragoverBubble && !t.rootEl && i !== document && (h.parentNode[F]._isOutsideThisEl(t.target), !Qt && Ct(t)), !s.dragoverBubble && t.stopPropagation && t.stopPropagation(), E = !0;
     }
     function W() {
-      L = U(h), ut = U(h, s.draggable), j({
+      U = L(h), ut = L(h, s.draggable), R({
         sortable: b,
         name: "change",
         toEl: e,
-        newIndex: L,
+        newIndex: U,
         newDraggableIndex: ut,
         originalEvent: t
       });
     }
     if (t.preventDefault !== void 0 && t.cancelable && t.preventDefault(), i = K(i, s.draggable, e, !0), Q("dragOver"), f.eventCanceled) return E;
     if (h.contains(t.target) || i.animated && i.animatingX && i.animatingY || b._ignoreWhileAnimating === i)
-      return R(!1);
-    if (Pe = !1, c && !s.disabled && (u ? d || (n = k !== C) : O === this || (this.lastPutMode = me.checkPull(this, c, h, t)) && l.checkPut(this, c, h, t))) {
+      return M(!1);
+    if (Pe = !1, c && !s.disabled && (u ? d || (n = k !== C) : O === this || (this.lastPutMode = ge.checkPull(this, c, h, t)) && l.checkPut(this, c, h, t))) {
       if (w = this._getDirection(t, i) === "vertical", r = D(h), Q("dragOverValid"), f.eventCanceled) return E;
       if (n)
-        return k = C, it(), this._hideClone(), Q("revert"), f.eventCanceled || (Pt ? C.insertBefore(h, Pt) : C.appendChild(h)), R(!0);
+        return k = C, it(), this._hideClone(), Q("revert"), f.eventCanceled || (Pt ? C.insertBefore(h, Pt) : C.appendChild(h)), M(!0);
       var z = ai(e, s.draggable);
       if (!z || Wo(t, w, this) && !z.animated) {
         if (z === h)
-          return R(!1);
+          return M(!1);
         if (z && e === t.target && (i = z), i && (a = D(i)), ve(C, e, h, r, i, a, t, !!i) !== !1)
-          return it(), z && z.nextSibling ? e.insertBefore(h, z.nextSibling) : e.appendChild(h), k = e, W(), R(!0);
+          return it(), z && z.nextSibling ? e.insertBefore(h, z.nextSibling) : e.appendChild(h), k = e, W(), M(!0);
       } else if (z && Qo(t, w, this)) {
         var bt = Bt(e, 0, s, !0);
         if (bt === h)
-          return R(!1);
+          return M(!1);
         if (i = bt, a = D(i), ve(C, e, h, r, i, a, t, !1) !== !1)
-          return it(), e.insertBefore(h, bt), k = e, W(), R(!0);
+          return it(), e.insertBefore(h, bt), k = e, W(), M(!0);
       } else if (i.parentNode === e) {
         a = D(i);
-        var Z = 0, wt, Lt = h.parentNode !== e, B = !Ho(h.animated && h.toRect || r, i.animated && i.toRect || a, w), Ut = w ? "top" : "left", dt = Ei(i, "top", "top") || Ei(h, "top", "top"), Xt = dt ? dt.scrollTop : void 0;
-        Nt !== i && (wt = a[Ut], re = !1, ge = !B && s.invertSwap || Lt), Z = Go(t, i, a, w, B ? 1 : s.swapThreshold, s.invertedSwapThreshold == null ? s.swapThreshold : s.invertedSwapThreshold, ge, Nt === i);
+        var Z = 0, wt, Ut = h.parentNode !== e, B = !Ho(h.animated && h.toRect || r, i.animated && i.toRect || a, w), Lt = w ? "top" : "left", dt = Ei(i, "top", "top") || Ei(h, "top", "top"), Xt = dt ? dt.scrollTop : void 0;
+        Nt !== i && (wt = a[Lt], re = !1, me = !B && s.invertSwap || Ut), Z = Go(t, i, a, w, B ? 1 : s.swapThreshold, s.invertedSwapThreshold == null ? s.swapThreshold : s.invertedSwapThreshold, me, Nt === i);
         var ot;
         if (Z !== 0) {
-          var $t = U(h);
+          var $t = L(h);
           do
             $t -= Z, ot = k.children[$t];
           while (ot && (p(ot, "display") === "none" || ot === v));
         }
         if (Z === 0 || ot === i)
-          return R(!1);
+          return M(!1);
         Nt = i, oe = Z;
         var Yt = i.nextElementSibling, ht = !1;
         ht = Z === 1;
         var fe = ve(C, e, h, r, i, a, t, ht);
         if (fe !== !1)
-          return (fe === 1 || fe === -1) && (ht = fe === 1), Ye = !0, setTimeout(Yo, 30), it(), ht && !Yt ? e.appendChild(h) : i.parentNode.insertBefore(h, ht ? Yt : i), dt && zi(dt, 0, Xt - dt.scrollTop), k = h.parentNode, wt !== void 0 && !ge && (we = Math.abs(wt - D(i)[Ut])), W(), R(!0);
+          return (fe === 1 || fe === -1) && (ht = fe === 1), Ye = !0, setTimeout(Yo, 30), it(), ht && !Yt ? e.appendChild(h) : i.parentNode.insertBefore(h, ht ? Yt : i), dt && zi(dt, 0, Xt - dt.scrollTop), k = h.parentNode, wt !== void 0 && !me && (we = Math.abs(wt - D(i)[Lt])), W(), M(!0);
       }
       if (e.contains(h))
-        return R(!1);
+        return M(!1);
     }
     return !1;
   },
@@ -2193,52 +2193,52 @@ f.prototype = /** @lends Sortable.prototype */
   },
   _onDrop: function(t) {
     var e = this.el, i = this.options;
-    if (L = U(h), ut = U(h, i.draggable), q("drop", this, {
+    if (U = L(h), ut = L(h, i.draggable), q("drop", this, {
       evt: t
-    }), k = h && h.parentNode, L = U(h), ut = U(h, i.draggable), f.eventCanceled) {
+    }), k = h && h.parentNode, U = L(h), ut = L(h, i.draggable), f.eventCanceled) {
       this._nulling();
       return;
     }
-    Rt = !1, ge = !1, re = !1, clearInterval(this._loopId), clearTimeout(this._dragStartTimer), Qe(this.cloneId), Qe(this._dragStartId), this.nativeDraggable && ($(document, "drop", this), $(e, "dragstart", this._onDragStart)), this._offMoveEvents(), this._offUpEvents(), te && p(document.body, "user-select", ""), p(h, "transform", ""), t && (Vt && (t.cancelable && t.preventDefault(), !i.dropBubble && t.stopPropagation()), v && v.parentNode && v.parentNode.removeChild(v), (C === k || O && O.lastPutMode !== "clone") && P && P.parentNode && P.parentNode.removeChild(P), h && (this.nativeDraggable && $(h, "dragend", this), ze(h), h.style["will-change"] = "", Vt && !Rt && H(h, O ? O.options.ghostClass : this.options.ghostClass, !1), H(h, this.options.chosenClass, !1), j({
+    Rt = !1, me = !1, re = !1, clearInterval(this._loopId), clearTimeout(this._dragStartTimer), Qe(this.cloneId), Qe(this._dragStartId), this.nativeDraggable && ($(document, "drop", this), $(e, "dragstart", this._onDragStart)), this._offMoveEvents(), this._offUpEvents(), te && p(document.body, "user-select", ""), p(h, "transform", ""), t && (Vt && (t.cancelable && t.preventDefault(), !i.dropBubble && t.stopPropagation()), v && v.parentNode && v.parentNode.removeChild(v), (C === k || O && O.lastPutMode !== "clone") && P && P.parentNode && P.parentNode.removeChild(P), h && (this.nativeDraggable && $(h, "dragend", this), ze(h), h.style["will-change"] = "", Vt && !Rt && H(h, O ? O.options.ghostClass : this.options.ghostClass, !1), H(h, this.options.chosenClass, !1), R({
       sortable: this,
       name: "unchoose",
       toEl: k,
       newIndex: null,
       newDraggableIndex: null,
       originalEvent: t
-    }), C !== k ? (L >= 0 && (j({
+    }), C !== k ? (U >= 0 && (R({
       rootEl: k,
       name: "add",
       toEl: k,
       fromEl: C,
       originalEvent: t
-    }), j({
+    }), R({
       sortable: this,
       name: "remove",
       toEl: k,
       originalEvent: t
-    }), j({
+    }), R({
       rootEl: k,
       name: "sort",
       toEl: k,
       fromEl: C,
       originalEvent: t
-    }), j({
+    }), R({
       sortable: this,
       name: "sort",
       toEl: k,
       originalEvent: t
-    })), O && O.save()) : L !== jt && L >= 0 && (j({
+    })), O && O.save()) : U !== jt && U >= 0 && (R({
       sortable: this,
       name: "update",
       toEl: k,
       originalEvent: t
-    }), j({
+    }), R({
       sortable: this,
       name: "sort",
       toEl: k,
       originalEvent: t
-    })), f.active && ((L == null || L === -1) && (L = jt, ut = ie), j({
+    })), f.active && ((U == null || U === -1) && (U = jt, ut = ie), R({
       sortable: this,
       name: "end",
       toEl: k,
@@ -2246,7 +2246,7 @@ f.prototype = /** @lends Sortable.prototype */
     }), this.save()))), this._nulling();
   },
   _nulling: function() {
-    q("nulling", this), C = h = k = v = Pt = P = be = ft = St = G = Vt = L = ut = jt = ie = Nt = oe = O = me = f.dragged = f.ghost = f.clone = f.active = null;
+    q("nulling", this), C = h = k = v = Pt = P = be = ft = St = G = Vt = U = ut = jt = ie = Nt = oe = O = ge = f.dragged = f.ghost = f.clone = f.active = null;
     var t = this.el;
     Ae.forEach(function(e) {
       t.contains(e) && (e.checked = !0);
@@ -2383,7 +2383,7 @@ function Go(o, t, e, i, r, a, n, s) {
   return y = y || n, y && (l < u + c * a / 2 || l > d - c * a / 2) ? l > u + c / 2 ? 1 : -1 : 0;
 }
 function Vo(o) {
-  return U(h) < U(o) ? 1 : -1;
+  return L(h) < L(o) ? 1 : -1;
 }
 function Ko(o) {
   for (var t = o.tagName + o.className + o.src + o.href + o.textContent, e = t.length, i = 0; e--; )
@@ -2419,10 +2419,10 @@ f.utils = {
   closest: K,
   toggleClass: H,
   clone: Bi,
-  index: U,
+  index: L,
   nextTick: $e,
   cancelNextTick: Qe,
-  detectDirection: Ui,
+  detectDirection: Li,
   getChild: Bt,
   expando: F
 };
@@ -2476,18 +2476,18 @@ function Jo() {
     _handleAutoScroll: function(e, i) {
       var r = this, a = (e.touches ? e.touches[0] : e).clientX, n = (e.touches ? e.touches[0] : e).clientY, s = document.elementFromPoint(a, n);
       if (De = e, i || this.options.forceAutoScrollFallback || he || ct || te) {
-        Le(e, this.options, s, i);
-        var l = mt(s, !0);
+        Ue(e, this.options, s, i);
+        var l = gt(s, !0);
         Ge && (!Zt || a !== Be || n !== He) && (Zt && Ai(), Zt = setInterval(function() {
-          var c = mt(document.elementFromPoint(a, n), !0);
-          c !== l && (l = c, xe()), Le(e, r.options, c, i);
+          var c = gt(document.elementFromPoint(a, n), !0);
+          c !== l && (l = c, xe()), Ue(e, r.options, c, i);
         }, 10), Be = a, He = n);
       } else {
-        if (!this.options.bubbleScroll || mt(s, !0) === J()) {
+        if (!this.options.bubbleScroll || gt(s, !0) === J()) {
           xe();
           return;
         }
-        Le(e, this.options, mt(s, !1), !1);
+        Ue(e, this.options, gt(s, !1), !1);
       }
     }
   }, at(o, {
@@ -2503,15 +2503,15 @@ function xe() {
 function Ai() {
   clearInterval(Zt);
 }
-var Le = Fi(function(o, t, e, i) {
+var Ue = Fi(function(o, t, e, i) {
   if (t.scroll) {
     var r = (o.touches ? o.touches[0] : o).clientX, a = (o.touches ? o.touches[0] : o).clientY, n = t.scrollSensitivity, s = t.scrollSpeed, l = J(), c = !1, u;
-    We !== e && (We = e, xe(), Kt = t.scroll, u = t.scrollFn, Kt === !0 && (Kt = mt(e, !0)));
+    We !== e && (We = e, xe(), Kt = t.scroll, u = t.scrollFn, Kt === !0 && (Kt = gt(e, !0)));
     var d = 0, y = Kt;
     do {
-      var w = y, b = D(w), E = b.top, Q = b.bottom, it = b.left, R = b.right, W = b.width, z = b.height, bt = void 0, Z = void 0, wt = w.scrollWidth, Lt = w.scrollHeight, B = p(w), Ut = w.scrollLeft, dt = w.scrollTop;
-      w === l ? (bt = W < wt && (B.overflowX === "auto" || B.overflowX === "scroll" || B.overflowX === "visible"), Z = z < Lt && (B.overflowY === "auto" || B.overflowY === "scroll" || B.overflowY === "visible")) : (bt = W < wt && (B.overflowX === "auto" || B.overflowX === "scroll"), Z = z < Lt && (B.overflowY === "auto" || B.overflowY === "scroll"));
-      var Xt = bt && (Math.abs(R - r) <= n && Ut + W < wt) - (Math.abs(it - r) <= n && !!Ut), ot = Z && (Math.abs(Q - a) <= n && dt + z < Lt) - (Math.abs(E - a) <= n && !!dt);
+      var w = y, b = D(w), E = b.top, Q = b.bottom, it = b.left, M = b.right, W = b.width, z = b.height, bt = void 0, Z = void 0, wt = w.scrollWidth, Ut = w.scrollHeight, B = p(w), Lt = w.scrollLeft, dt = w.scrollTop;
+      w === l ? (bt = W < wt && (B.overflowX === "auto" || B.overflowX === "scroll" || B.overflowX === "visible"), Z = z < Ut && (B.overflowY === "auto" || B.overflowY === "scroll" || B.overflowY === "visible")) : (bt = W < wt && (B.overflowX === "auto" || B.overflowX === "scroll"), Z = z < Ut && (B.overflowY === "auto" || B.overflowY === "scroll"));
+      var Xt = bt && (Math.abs(M - r) <= n && Lt + W < wt) - (Math.abs(it - r) <= n && !!Lt), ot = Z && (Math.abs(Q - a) <= n && dt + z < Ut) - (Math.abs(E - a) <= n && !!dt);
       if (!A[d])
         for (var $t = 0; $t <= d; $t++)
           A[$t] || (A[$t] = {});
@@ -2522,7 +2522,7 @@ var Le = Fi(function(o, t, e, i) {
       }.bind({
         layer: d
       }), 24))), d++;
-    } while (t.bubbleScroll && y !== l && (y = mt(y, !1)));
+    } while (t.bubbleScroll && y !== l && (y = gt(y, !1)));
     Ge = c;
   }
 }, 30), Wi = function(t) {
@@ -2660,19 +2660,19 @@ let nt = class extends X {
   }
   render() {
     if (this.loading)
-      return g`
+      return m`
         <div class="loading">
           <ha-circular-progress active></ha-circular-progress>
         </div>
       `;
     if (!this.playlist)
-      return g`
+      return m`
         <div class="error">
           <p>Playlist not found</p>
         </div>
       `;
     const o = this._tracks.length, t = this._tracks.reduce((e, i) => e + (i.duration || 0), 0);
-    return g`
+    return m`
       <div class="header">
         <button class="back-button" @click=${this._onBack} title="Back to playlists">
           <ha-icon icon="mdi:arrow-left"></ha-icon>
@@ -2689,7 +2689,7 @@ let nt = class extends X {
         </button>
       </div>
 
-      ${o > 1 ? g`
+      ${o > 1 ? m`
         <div class="reorder-hint">
           <ha-icon icon="mdi:information-outline"></ha-icon>
           Drag tracks to reorder
@@ -2697,7 +2697,7 @@ let nt = class extends X {
       ` : ""}
 
       <div class="track-list">
-        ${this._tracks.map((e, i) => g`
+        ${this._tracks.map((e, i) => m`
           <mopidy-track-item
             .track=${e}
             .index=${i}
@@ -2708,7 +2708,7 @@ let nt = class extends X {
           ></mopidy-track-item>
         `)}
         
-        ${o === 0 ? g`
+        ${o === 0 ? m`
           <div class="empty-state">
             <ha-icon icon="mdi:music-note-off"></ha-icon>
             <p>This playlist is empty</p>
@@ -2721,13 +2721,13 @@ let nt = class extends X {
           <ha-icon icon="mdi:plus"></ha-icon>
           Add Tracks
         </mwc-button>
-        ${o > 0 ? g`
+        ${o > 0 ? m`
           <mwc-button @click=${this._onPlayAll} ?disabled=${this.saving}>
             <ha-icon icon="mdi:play"></ha-icon>
             Play All
           </mwc-button>
         ` : ""}
-        ${this._hasChanges ? g`
+        ${this._hasChanges ? m`
           <mwc-button 
             @click=${this._onSaveChanges} 
             ?disabled=${this.saving}
@@ -2858,10 +2858,10 @@ Tt([
   S({ type: Boolean })
 ], nt.prototype, "saving", 2);
 Tt([
-  M()
+  N()
 ], nt.prototype, "_tracks", 2);
 Tt([
-  M()
+  N()
 ], nt.prototype, "_hasChanges", 2);
 Tt([
   ii(".track-list")
@@ -2894,26 +2894,26 @@ let Dt = class extends X {
   }
   render() {
     const o = this.track.artists?.join(", ") || "";
-    return g`
+    return m`
       <div class="track-item">
-        ${this.draggable ? g`
+        ${this.draggable ? m`
           <div class="drag-handle" data-drag-handle>
             <ha-icon icon="mdi:drag"></ha-icon>
           </div>
-        ` : g`
+        ` : m`
           <div class="track-number">${this.track.trackNo || this.index + 1}</div>
         `}
         
         <div class="track-info" @click=${this._onTrackClick}>
           <div class="track-title">${this.track.name}</div>
-          ${o ? g`
+          ${o ? m`
             <div class="track-artist">${o}${this.track.album ? ` • ${this.track.album}` : ""}</div>
           ` : ""}
         </div>
         
-        <div class="track-duration">${Ue(this.track.duration)}</div>
+        <div class="track-duration">${Le(this.track.duration)}</div>
         
-        ${this.showRemove ? g`
+        ${this.showRemove ? m`
           <button class="remove-button" @click=${this._onRemoveClick} title="Remove track">
             <ha-icon icon="mdi:close"></ha-icon>
           </button>
@@ -3036,7 +3036,7 @@ var rr = Object.defineProperty, ar = Object.getOwnPropertyDescriptor, Ht = (o, t
     (n = o[a]) && (r = (i ? n(t, e, r) : n(r)) || r);
   return i && r && rr(t, e, r), r;
 };
-let gt = class extends X {
+let mt = class extends X {
   constructor() {
     super(...arguments), this.queue = [], this.searching = !1, this._searchQuery = "", this._activeTab = "queue", this._searchResults = [];
   }
@@ -3076,7 +3076,7 @@ let gt = class extends X {
     this._searchResults = o;
   }
   render() {
-    return g`
+    return m`
       <div class="search-header">
         <ha-textfield
           class="search-input"
@@ -3089,37 +3089,37 @@ let gt = class extends X {
         </ha-textfield>
       </div>
 
-      ${this._searchQuery.trim() ? g`
+      ${this._searchQuery.trim() ? m`
         <div class="search-results">
-          ${this.searching ? g`
+          ${this.searching ? m`
             <div class="searching">
               <ha-circular-progress active></ha-circular-progress>
               <p>Searching...</p>
             </div>
-          ` : this._searchResults.length > 0 ? g`
+          ` : this._searchResults.length > 0 ? m`
             <div class="section-title">Search Results</div>
-            ${this._searchResults.map((o) => g`
+            ${this._searchResults.map((o) => m`
               <div class="result-item">
                 <div class="result-info">
                   <div class="result-title">${o.name}</div>
-                  ${o.artists?.length ? g`
+                  ${o.artists?.length ? m`
                     <div class="result-artist">${o.artists.join(", ")}</div>
                   ` : ""}
                 </div>
-                <div class="result-duration">${Ue(o.duration)}</div>
+                <div class="result-duration">${Le(o.duration)}</div>
                 <button class="add-button" @click=${() => this._onAddTrack(o)} title="Add to playlist">
                   <ha-icon icon="mdi:plus-circle"></ha-icon>
                 </button>
               </div>
             `)}
-          ` : g`
+          ` : m`
             <div class="no-results">
               <ha-icon icon="mdi:music-note-off"></ha-icon>
               <p>No tracks found</p>
             </div>
           `}
         </div>
-      ` : g`
+      ` : m`
         <div class="tabs">
           <div 
             class="tab ${this._activeTab === "queue" ? "active" : ""}"
@@ -3135,32 +3135,32 @@ let gt = class extends X {
           </div>
         </div>
 
-        ${this._activeTab === "queue" ? g`
+        ${this._activeTab === "queue" ? m`
           <div class="queue-list">
-            ${this.queue.length > 0 ? g`
+            ${this.queue.length > 0 ? m`
               <div class="section-title">Add from Queue</div>
-              ${this.queue.map((o) => g`
+              ${this.queue.map((o) => m`
                 <div class="result-item">
                   <div class="result-info">
                     <div class="result-title">${o.name}</div>
-                    ${o.artists?.length ? g`
+                    ${o.artists?.length ? m`
                       <div class="result-artist">${o.artists.join(", ")}</div>
                     ` : ""}
                   </div>
-                  <div class="result-duration">${Ue(o.duration)}</div>
+                  <div class="result-duration">${Le(o.duration)}</div>
                   <button class="add-button" @click=${() => this._onAddQueueItem(o)} title="Add to playlist">
                     <ha-icon icon="mdi:plus-circle"></ha-icon>
                   </button>
                 </div>
               `)}
-            ` : g`
+            ` : m`
               <div class="no-results">
                 <ha-icon icon="mdi:playlist-remove"></ha-icon>
                 <p>Queue is empty</p>
               </div>
             `}
           </div>
-        ` : g`
+        ` : m`
           <div class="no-results">
             <ha-icon icon="mdi:magnify"></ha-icon>
             <p>Enter a search term to find tracks</p>
@@ -3170,7 +3170,7 @@ let gt = class extends X {
     `;
   }
 };
-gt.styles = [vt, lt`
+mt.styles = [vt, lt`
     :host {
       display: block;
     }
@@ -3292,22 +3292,22 @@ gt.styles = [vt, lt`
   `];
 Ht([
   S({ type: Array })
-], gt.prototype, "queue", 2);
+], mt.prototype, "queue", 2);
 Ht([
   S({ type: Boolean })
-], gt.prototype, "searching", 2);
+], mt.prototype, "searching", 2);
 Ht([
-  M()
-], gt.prototype, "_searchQuery", 2);
+  N()
+], mt.prototype, "_searchQuery", 2);
 Ht([
-  M()
-], gt.prototype, "_activeTab", 2);
+  N()
+], mt.prototype, "_activeTab", 2);
 Ht([
-  M()
-], gt.prototype, "_searchResults", 2);
-gt = Ht([
+  N()
+], mt.prototype, "_searchResults", 2);
+mt = Ht([
   yt("mopidy-track-search")
-], gt);
+], mt);
 var nr = Object.defineProperty, sr = Object.getOwnPropertyDescriptor, _t = (o, t, e, i) => {
   for (var r = i > 1 ? void 0 : i ? sr(t, e) : t, a = o.length - 1, n; a >= 0; a--)
     (n = o[a]) && (r = (i ? n(t, e, r) : n(r)) || r);
@@ -3335,7 +3335,7 @@ let et = class extends X {
     this._onCancel();
   }
   render() {
-    return this.open ? g`
+    return this.open ? m`
       <ha-dialog
         .open=${this.open}
         @closed=${this._onClose}
@@ -3358,7 +3358,7 @@ let et = class extends X {
           ${this.confirmText}
         </mwc-button>
       </ha-dialog>
-    ` : g``;
+    ` : m``;
   }
 };
 et.styles = [vt, lt`
@@ -3385,7 +3385,7 @@ _t([
   S({ type: Boolean })
 ], et.prototype, "destructive", 2);
 _t([
-  M()
+  N()
 ], et.prototype, "_resolve", 2);
 et = _t([
   yt("mopidy-confirm-dialog")
@@ -3425,9 +3425,9 @@ let st = class extends X {
     this._onCancel();
   }
   render() {
-    if (!this.open) return g``;
+    if (!this.open) return m``;
     const o = this.queue.length, t = o > 0;
-    return g`
+    return m`
       <ha-dialog
         .open=${this.open}
         @closed=${this._onClose}
@@ -3469,12 +3469,12 @@ let st = class extends X {
                 />
                 <span>Current queue (${o} tracks)</span>
               </label>
-              ${t && this._source === "queue" ? g`
+              ${t && this._source === "queue" ? m`
                 <div class="queue-info">
                   ${o} track${o !== 1 ? "s" : ""} will be added to the new playlist
                 </div>
               ` : ""}
-              ${t ? "" : g`
+              ${t ? "" : m`
                 <div class="queue-info">
                   Queue is empty - cannot create from queue
                 </div>
@@ -3542,13 +3542,13 @@ Ot([
   S({ type: String })
 ], st.prototype, "defaultScheme", 2);
 Ot([
-  M()
+  N()
 ], st.prototype, "_name", 2);
 Ot([
-  M()
+  N()
 ], st.prototype, "_source", 2);
 Ot([
-  M()
+  N()
 ], st.prototype, "_resolve", 2);
 st = Ot([
   yt("mopidy-create-playlist-dialog")
@@ -3558,52 +3558,52 @@ var dr = Object.defineProperty, hr = Object.getOwnPropertyDescriptor, Y = (o, t,
     (n = o[a]) && (r = (i ? n(t, e, r) : n(r)) || r);
   return i && r && dr(t, e, r), r;
 };
-function m(...o) {
+function g(...o) {
   console.log("[MopidyPlaylistCard]", ...o);
 }
 function V(...o) {
   console.error("[MopidyPlaylistCard]", ...o);
 }
-let N = class extends X {
+let j = class extends X {
   constructor() {
-    super(), this._view = "list", this._loading = !1, this._saving = !1, this._playlists = [], this._selectedPlaylist = null, this._queue = [], this._toast = null, m("Card constructor called");
+    super(), this._view = "list", this._loading = !1, this._saving = !1, this._playlists = [], this._selectedPlaylist = null, this._queue = [], this._toast = null, g("Card constructor called");
   }
   connectedCallback() {
-    super.connectedCallback(), m("Card connected to DOM");
+    super.connectedCallback(), g("Card connected to DOM");
   }
   disconnectedCallback() {
-    super.disconnectedCallback(), m("Card disconnected from DOM");
+    super.disconnectedCallback(), g("Card disconnected from DOM");
   }
   updated(t) {
-    super.updated(t), m("updated() called, changed properties:", [...t.keys()]), t.has("hass") && (m("hass changed, hass object:", this.hass ? "present" : "missing"), this.hass && m("hass.states:", Object.keys(this.hass.states || {}))), t.has("config") && m("config changed:", this.config), t.has("hass") && this.hass && this.config && (m("Both hass and config are available, initializing service..."), this._service = new Eo(this.hass, this.config.entity), this._view === "list" && this._playlists.length === 0 && (m("Loading playlists from updated()..."), this._loadPlaylists()), m("Loading queue from updated()..."), this._loadQueue());
+    super.updated(t), g("updated() called, changed properties:", [...t.keys()]), t.has("hass") && (g("hass changed, hass object:", this.hass ? "present" : "missing"), this.hass && g("hass.states:", Object.keys(this.hass.states || {}))), t.has("config") && g("config changed:", this.config), t.has("hass") && this.hass && this.config && (g("Both hass and config are available, initializing service..."), this._service = new Eo(this.hass, this.config.entity), this._view === "list" && this._playlists.length === 0 && (g("Loading playlists from updated()..."), this._loadPlaylists()), g("Loading queue from updated()..."), this._loadQueue());
   }
   async _loadPlaylists() {
-    if (m("_loadPlaylists called, service:", this._service ? "available" : "missing"), !this._service) {
-      m("Cannot load playlists - no service");
+    if (g("_loadPlaylists called, service:", this._service ? "available" : "missing"), !this._service) {
+      g("Cannot load playlists - no service");
       return;
     }
-    this._loading = !0, m("Setting loading=true, fetching playlists...");
+    this._loading = !0, g("Setting loading=true, fetching playlists...");
     try {
-      this._playlists = await this._service.getPlaylists(), m("Playlists loaded:", this._playlists.length, this._playlists);
+      this._playlists = await this._service.getPlaylists(), g("Playlists loaded:", this._playlists.length, this._playlists);
     } catch (t) {
       V("Error loading playlists:", t), this._showToast("Failed to load playlists");
     } finally {
-      this._loading = !1, m("Setting loading=false");
+      this._loading = !1, g("Setting loading=false");
     }
   }
   async _loadQueue() {
-    if (m("_loadQueue called, service:", this._service ? "available" : "missing"), !!this._service)
+    if (g("_loadQueue called, service:", this._service ? "available" : "missing"), !!this._service)
       try {
-        this._queue = await this._service.getQueue(), m("Queue loaded:", this._queue.length, "items");
+        this._queue = await this._service.getQueue(), g("Queue loaded:", this._queue.length, "items");
       } catch (t) {
         V("Error loading queue:", t);
       }
   }
   async _loadPlaylistDetail(t) {
-    if (m("_loadPlaylistDetail called with uri:", t), !!this._service) {
+    if (g("_loadPlaylistDetail called with uri:", t), !!this._service) {
       this._loading = !0;
       try {
-        this._selectedPlaylist = await this._service.getPlaylist(t), m("Playlist detail loaded:", this._selectedPlaylist), this._view = "detail", m("View changed to detail");
+        this._selectedPlaylist = await this._service.getPlaylist(t), g("Playlist detail loaded:", this._selectedPlaylist), this._view = "detail", g("View changed to detail");
       } catch (e) {
         V("Error loading playlist:", e), this._showToast("Failed to load playlist");
       } finally {
@@ -3612,21 +3612,21 @@ let N = class extends X {
     }
   }
   _showToast(t) {
-    m("Showing toast:", t), this._toast = t, this._toastTimeout && clearTimeout(this._toastTimeout), this._toastTimeout = window.setTimeout(() => {
-      this._toast = null, m("Toast cleared");
+    g("Showing toast:", t), this._toast = t, this._toastTimeout && clearTimeout(this._toastTimeout), this._toastTimeout = window.setTimeout(() => {
+      this._toast = null, g("Toast cleared");
     }, 3e3);
   }
   // Event handlers
   async _onCreatePlaylist() {
-    if (m("_onCreatePlaylist called"), !this._createDialog) {
-      m("Create dialog not available");
+    if (g("_onCreatePlaylist called"), !this._createDialog) {
+      g("Create dialog not available");
       return;
     }
     const t = await this._createDialog.show();
-    if (m("Create dialog result:", t), !!t) {
+    if (g("Create dialog result:", t), !!t) {
       this._saving = !0;
       try {
-        t.source === "queue" ? (m("Creating playlist from queue:", t.name), await this._service?.saveQueueToPlaylist(t.name)) : (m("Creating empty playlist:", t.name), await this._service?.createPlaylist(t.name)), this._showToast(`Playlist "${t.name}" created`), await this._loadPlaylists();
+        t.source === "queue" ? (g("Creating playlist from queue:", t.name), await this._service?.saveQueueToPlaylist(t.name)) : (g("Creating empty playlist:", t.name), await this._service?.createPlaylist(t.name)), this._showToast(`Playlist "${t.name}" created`), await this._loadPlaylists();
       } catch (e) {
         V("Error creating playlist:", e), this._showToast("Failed to create playlist");
       } finally {
@@ -3636,13 +3636,13 @@ let N = class extends X {
   }
   async _onDeletePlaylist(t) {
     const { playlist: e } = t.detail;
-    if (m("_onDeletePlaylist called for:", e), !this._confirmDialog) {
-      m("Confirm dialog not available");
+    if (g("_onDeletePlaylist called for:", e), !this._confirmDialog) {
+      g("Confirm dialog not available");
       return;
     }
     this._confirmDialog.title = "Delete Playlist", this._confirmDialog.message = `Are you sure you want to delete "${e.name}"? This cannot be undone.`, this._confirmDialog.destructive = !0, this._confirmDialog.confirmText = "Delete";
     const i = await this._confirmDialog.show();
-    if (m("Delete confirmation result:", i), !!i)
+    if (g("Delete confirmation result:", i), !!i)
       try {
         await this._service?.deletePlaylist(e.uri), this._showToast(`Playlist "${e.name}" deleted`), this._view === "detail" && this._selectedPlaylist?.uri === e.uri && (this._view = "list", this._selectedPlaylist = null), await this._loadPlaylists();
       } catch (r) {
@@ -3651,14 +3651,14 @@ let N = class extends X {
   }
   _onSelectPlaylist(t) {
     const { playlist: e } = t.detail;
-    m("_onSelectPlaylist:", e), this._loadPlaylistDetail(e.uri);
+    g("_onSelectPlaylist:", e), this._loadPlaylistDetail(e.uri);
   }
   _onBackToList() {
-    m("_onBackToList called"), this._view = "list", this._selectedPlaylist = null;
+    g("_onBackToList called"), this._view = "list", this._selectedPlaylist = null;
   }
   async _onPlayPlaylist(t) {
     const { playlist: e } = t.detail;
-    m("_onPlayPlaylist:", e);
+    g("_onPlayPlaylist:", e);
     try {
       await this._service?.playPlaylist(e.uri), this._showToast(`Playing "${e.name}"`);
     } catch (i) {
@@ -3667,7 +3667,7 @@ let N = class extends X {
   }
   async _onPlayTrack(t) {
     const { track: e } = t.detail;
-    m("_onPlayTrack:", e);
+    g("_onPlayTrack:", e);
     try {
       await this._service?.playTrack(e.uri), this._showToast(`Playing "${e.name}"`);
     } catch (i) {
@@ -3676,7 +3676,7 @@ let N = class extends X {
   }
   async _onRemoveTrack(t) {
     const { index: e, tracks: i } = t.detail;
-    if (m("_onRemoveTrack called, index:", e, "remaining tracks:", i.length), !!this._selectedPlaylist) {
+    if (g("_onRemoveTrack called, index:", e, "remaining tracks:", i.length), !!this._selectedPlaylist) {
       this._saving = !0;
       try {
         await this._service?.removeFromPlaylist(this._selectedPlaylist.uri, [e]), this._selectedPlaylist = {
@@ -3692,7 +3692,7 @@ let N = class extends X {
   }
   async _onSaveChanges(t) {
     const { playlist: e, tracks: i } = t.detail;
-    if (m("_onSaveChanges called, playlist:", e, "tracks:", i.length), !!e) {
+    if (g("_onSaveChanges called, playlist:", e, "tracks:", i.length), !!e) {
       this._saving = !0;
       try {
         if (await this._service?.clearPlaylist(e.uri), i.length > 0) {
@@ -3711,11 +3711,11 @@ let N = class extends X {
     }
   }
   _onAddTracks(t) {
-    m("_onAddTracks called, switching to search view"), this._view = "search";
+    g("_onAddTracks called, switching to search view"), this._view = "search";
   }
   async _onAddTrack(t) {
     const { track: e } = t.detail;
-    if (m("_onAddTrack called, track:", e), !!this._selectedPlaylist)
+    if (g("_onAddTrack called, track:", e), !!this._selectedPlaylist)
       try {
         await this._service?.addToPlaylist(this._selectedPlaylist.uri, [e.uri]), this._showToast(`Added "${e.name}"`), await this._loadPlaylistDetail(this._selectedPlaylist.uri);
       } catch (i) {
@@ -3724,26 +3724,26 @@ let N = class extends X {
   }
   async _onSearch(t) {
     const { query: e } = t.detail;
-    m("_onSearch called, query:", e);
+    g("_onSearch called, query:", e);
   }
   _onCloseSearch() {
-    m("_onCloseSearch called"), this._view = "detail";
+    g("_onCloseSearch called"), this._view = "detail";
   }
   setConfig(t) {
-    if (m("setConfig called with:", t), !t.entity)
+    if (g("setConfig called with:", t), !t.entity)
       throw V("Entity is required in config"), new Error("Entity is required");
-    this.config = t, m("Config set successfully");
+    this.config = t, g("Config set successfully");
   }
   getCardSize() {
     return 5;
   }
   render() {
-    if (m("render() called, view:", this._view, "config:", this.config ? "present" : "missing"), !this.config)
-      return m("No config, showing error"), g`<ha-card><div class="error">Configuration error</div></ha-card>`;
+    if (g("render() called, view:", this._view, "config:", this.config ? "present" : "missing"), !this.config)
+      return g("No config, showing error"), m`<ha-card><div class="error">Configuration error</div></ha-card>`;
     const t = this.config.title || "Playlist Manager";
-    return m("Rendering with title:", t, "playlists:", this._playlists.length, "queue:", this._queue.length), g`
+    return g("Rendering with title:", t, "playlists:", this._playlists.length, "queue:", this._queue.length), m`
       <ha-card>
-        ${this._view === "list" ? g`
+        ${this._view === "list" ? m`
           <div class="card-header">
             <h1>${t}</h1>
             <div class="header-actions">
@@ -3759,7 +3759,7 @@ let N = class extends X {
             @delete-playlist=${this._onDeletePlaylist}
             @play-playlist=${this._onPlayPlaylist}
           ></mopidy-playlist-list>
-          ${this.config.show_queue_button !== !1 && this._queue.length > 0 ? g`
+          ${this.config.show_queue_button !== !1 && this._queue.length > 0 ? m`
             <div class="card-actions">
               <mwc-button @click=${this._onCreatePlaylist}>
                 <ha-icon icon="mdi:content-save"></ha-icon>
@@ -3767,7 +3767,7 @@ let N = class extends X {
               </mwc-button>
             </div>
           ` : ""}
-        ` : this._view === "detail" ? g`
+        ` : this._view === "detail" ? m`
           <mopidy-playlist-detail
             .playlist=${this._selectedPlaylist}
             .loading=${this._loading}
@@ -3780,7 +3780,7 @@ let N = class extends X {
             @save-changes=${this._onSaveChanges}
             @add-tracks=${this._onAddTracks}
           ></mopidy-playlist-detail>
-        ` : g`
+        ` : m`
           <div class="search-dialog">
             <div class="search-header">
               <button class="header-button" @click=${this._onCloseSearch}>
@@ -3802,13 +3802,13 @@ let N = class extends X {
       <mopidy-confirm-dialog></mopidy-confirm-dialog>
       <mopidy-create-playlist-dialog .queue=${this._queue}></mopidy-create-playlist-dialog>
 
-      ${this._toast ? g`
+      ${this._toast ? m`
         <div class="toast">${this._toast}</div>
       ` : ""}
     `;
   }
 };
-N.styles = [vt, lt`
+j.styles = [vt, lt`
     :host {
       display: block;
     }
@@ -3896,40 +3896,40 @@ N.styles = [vt, lt`
   `];
 Y([
   S({ attribute: !1 })
-], N.prototype, "hass", 2);
+], j.prototype, "hass", 2);
 Y([
   S({ type: Object })
-], N.prototype, "config", 2);
+], j.prototype, "config", 2);
 Y([
-  M()
-], N.prototype, "_view", 2);
+  N()
+], j.prototype, "_view", 2);
 Y([
-  M()
-], N.prototype, "_loading", 2);
+  N()
+], j.prototype, "_loading", 2);
 Y([
-  M()
-], N.prototype, "_saving", 2);
+  N()
+], j.prototype, "_saving", 2);
 Y([
-  M()
-], N.prototype, "_playlists", 2);
+  N()
+], j.prototype, "_playlists", 2);
 Y([
-  M()
-], N.prototype, "_selectedPlaylist", 2);
+  N()
+], j.prototype, "_selectedPlaylist", 2);
 Y([
-  M()
-], N.prototype, "_queue", 2);
+  N()
+], j.prototype, "_queue", 2);
 Y([
-  M()
-], N.prototype, "_toast", 2);
+  N()
+], j.prototype, "_toast", 2);
 Y([
   ii("mopidy-confirm-dialog")
-], N.prototype, "_confirmDialog", 2);
+], j.prototype, "_confirmDialog", 2);
 Y([
   ii("mopidy-create-playlist-dialog")
-], N.prototype, "_createDialog", 2);
-N = Y([
+], j.prototype, "_createDialog", 2);
+j = Y([
   yt("mopidy-playlist-card")
-], N);
+], j);
 var ur = Object.defineProperty, pr = Object.getOwnPropertyDescriptor, li = (o, t, e, i) => {
   for (var r = i > 1 ? void 0 : i ? pr(t, e) : t, a = o.length - 1, n; a >= 0; a--)
     (n = o[a]) && (r = (i ? n(t, e, r) : n(r)) || r);
@@ -3958,7 +3958,7 @@ let ce = class extends X {
     );
   }
   render() {
-    return g`
+    return m`
       <div class="form-row">
         <label>Entity</label>
         <ha-entity-picker
@@ -4035,50 +4035,19 @@ li([
 ce = li([
   yt("mopidy-playlist-card-editor")
 ], ce);
-const fr = {
-  type: "mopidy-playlist-card",
-  name: "Mopidy Playlist Card",
-  description: "A card for managing Mopidy playlists - create, edit, and delete playlists"
-};
-typeof window < "u" && (window.customCards || (window.customCards = []), window.customCards.push(fr));
 console.info(
   "%c MOPIDY-PLAYLIST-CARD %c v1.0.0 ",
   "color: white; background: #03a9f4; font-weight: 700;",
   "color: #03a9f4; background: white; font-weight: 700;"
 );
-customElements.get("mopidy-playlist-card") || customElements.define("mopidy-playlist-card", N);
-window.customCards = window.customCards || [];
-const mr = class extends HTMLElement {
-  constructor() {
-    super(), this.attachShadow({ mode: "open" });
-  }
-  set hass(o) {
-    this._hass = o, this._card && (this._card.hass = o);
-  }
-  setConfig(o) {
-    if (!o.entity)
-      throw new Error("Entity is required");
-    this._card || (this._card = document.createElement("mopidy-playlist-card"), this.shadowRoot?.appendChild(this._card)), this._card.setConfig(o), this._hass && (this._card.hass = this._hass);
-  }
-  getCardSize() {
-    return 5;
-  }
-  static getConfigElement() {
-    return document.createElement("mopidy-playlist-card-editor");
-  }
-  static getStubConfig() {
-    return {
-      type: "custom:mopidy-playlist-card",
-      entity: "",
-      title: "Playlist Manager",
-      show_queue_button: !0
-    };
-  }
-};
-customElements.get("mopidy-playlist-card-wrapper") || customElements.define("mopidy-playlist-card-wrapper", mr);
-const br = N;
+typeof window < "u" && (window.customCards || (window.customCards = []), window.customCards.push({
+  type: "mopidy-playlist-card",
+  name: "Mopidy Playlist Card",
+  description: "A card for managing Mopidy playlists - create, edit, and delete playlists"
+}));
+const vr = j;
 export {
-  N as MopidyPlaylistCard,
-  br as default
+  j as MopidyPlaylistCard,
+  vr as default
 };
 //# sourceMappingURL=mopidy-playlist-card.js.map
