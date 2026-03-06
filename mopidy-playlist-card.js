@@ -891,7 +891,7 @@ class So {
       });
       return b("browseMedia result:", i), i;
     } catch (i) {
-      throw Vt("browseMedia failed:", i), i;
+      throw Vt("browseMedia failed:", JSON.stringify(i, null, 2)), i;
     }
   }
   /**
@@ -986,7 +986,7 @@ class So {
   async getQueue() {
     b("getQueue called for entity:", this.entityId);
     try {
-      const t = await this.browseMedia("queue:", "playlist");
+      const t = await this.browseMedia("queue:");
       if (b("Queue browse result:", t), !t || !t.children)
         return b("Queue browse returned no children"), [];
       b("Queue has", t.children.length, "items");
@@ -1007,7 +1007,7 @@ class So {
       }
       return b("getQueue returning", e.length, "items"), e;
     } catch (t) {
-      return Vt("Error fetching queue:", t), [];
+      return Vt("Error fetching queue:", JSON.stringify(t, null, 2)), [];
     }
   }
   /**

@@ -78,7 +78,7 @@ export class MopidyService {
       log('browseMedia result:', result);
       return result;
     } catch (error) {
-      logError('browseMedia failed:', error);
+      logError('browseMedia failed:', JSON.stringify(error, null, 2));
       throw error;
     }
   }
@@ -206,7 +206,8 @@ export class MopidyService {
     log('getQueue called for entity:', this.entityId);
     try {
       // Use media browser to get queue - browse the "queue:" content ID
-      const result = await this.browseMedia('queue:', 'playlist');
+      // Try without content type first, as the queue browser may handle it differently
+      const result = await this.browseMedia('queue:');
       log('Queue browse result:', result);
       
       if (!result || !result.children) {
@@ -237,7 +238,7 @@ export class MopidyService {
       log('getQueue returning', queueItems.length, 'items');
       return queueItems;
     } catch (error) {
-      logError('Error fetching queue:', error);
+      logError('Error fetching queue:', JSON.stringify(error, null, 2));
       return [];
     }
   }
