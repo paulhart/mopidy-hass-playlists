@@ -11,6 +11,18 @@ import './components/track-search';
 import './components/confirm-dialog';
 import './components/create-playlist-dialog';
 
+const DEBUG = true;
+
+function log(...args: unknown[]) {
+  if (DEBUG) {
+    console.log('[MopidyPlaylistCard]', ...args);
+  }
+}
+
+function logError(...args: unknown[]) {
+  console.error('[MopidyPlaylistCard]', ...args);
+}
+
 /**
  * Card configuration interface
  */
@@ -145,51 +157,95 @@ export class MopidyPlaylistCard extends LitElement {
   private _service?: MopidyService;
   private _toastTimeout?: number;
 
+  constructor() {
+    super();
+    log('Card constructor called');
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    log('Card connected to DOM');
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    log('Card disconnected from DOM');
+  }
+
   protected updated(changedProperties: PropertyValues) {
     super.updated(changedProperties);
     
+    log('updated() called, changed properties:', [...changedProperties.keys()]);
+    
+    if (changedProperties.has('hass')) {
+      log('hass changed, hass object:', this.hass ? 'present' : 'missing');
+      if (this.hass) {
+        log('hass.states:', Object.keys(this.hass.states || {}));
+      }
+    }
+    
+    if (changedProperties.has('config')) {
+      log('config changed:', this.config);
+    }
+    
     if (changedProperties.has('hass') && this.hass && this.config) {
+      log('Both hass and config are available, initializing service...');
       this._service = new MopidyService(this.hass, this.config.entity);
+      
       if (this._view === 'list' && this._playlists.length === 0) {
+        log('Loading playlists from updated()...');
         this._loadPlaylists();
       }
+      log('Loading queue from updated()...');
       this._loadQueue();
     }
   }
 
   private async _loadPlaylists() {
-    if (!this._service) return;
+    log('_loadPlaylists called, service:', this._service ? 'available' : 'missing');
+    if (!this._service) {
+      log('Cannot load playlists - no service');
+      return;
+    }
     
     this._loading = true;
+    log('Setting loading=true, fetching playlists...');
     try {
       this._playlists = await this._service.getPlaylists();
+      log('Playlists loaded:', this._playlists.length, this._playlists);
     } catch (error) {
-      console.error('Error loading playlists:', error);
+      logError('Error loading playlists:', error);
       this._showToast('Failed to load playlists');
     } finally {
       this._loading = false;
+      log('Setting loading=false');
     }
   }
 
   private async _loadQueue() {
+    log('_loadQueue called, service:', this._service ? 'available' : 'missing');
     if (!this._service) return;
     
     try {
       this._queue = await this._service.getQueue();
+      log('Queue loaded:', this._queue.length, 'items');
     } catch (error) {
-      console.error('Error loading queue:', error);
+      logError('Error loading queue:', error);
     }
   }
 
   private async _loadPlaylistDetail(uri: string) {
+    log('_loadPlaylistDetail called with uri:', uri);
     if (!this._service) return;
     
     this._loading = true;
     try {
       this._selectedPlaylist = await this._service.getPlaylist(uri);
+      log('Playlist detail loaded:', this._selectedPlaylist);
       this._view = 'detail';
+      log('View changed to detail');
     } catch (error) {
-      console.error('Error loading playlist:', error);
+      logError('Error loading playlist:', error);
       this._showToast('Failed to load playlist');
     } finally {
       this._loading = false;
@@ -197,34 +253,43 @@ export class MopidyPlaylistCard extends LitElement {
   }
 
   private _showToast(message: string) {
+    log('Showing toast:', message);
     this._toast = message;
     if (this._toastTimeout) {
       clearTimeout(this._toastTimeout);
     }
     this._toastTimeout = window.setTimeout(() => {
       this._toast = null;
+      log('Toast cleared');
     }, 3000);
   }
 
   // Event handlers
 
   private async _onCreatePlaylist() {
-    if (!this._createDialog) return;
+    log('_onCreatePlaylist called');
+    if (!this._createDialog) {
+      log('Create dialog not available');
+      return;
+    }
     
     const result = await this._createDialog.show();
+    log('Create dialog result:', result);
     if (!result) return;
 
     this._saving = true;
     try {
       if (result.source === 'queue') {
+        log('Creating playlist from queue:', result.name);
         await this._service?.saveQueueToPlaylist(result.name);
       } else {
+        log('Creating empty playlist:', result.name);
         await this._service?.createPlaylist(result.name);
       }
       this._showToast(`Playlist "${result.name}" created`);
       await this._loadPlaylists();
     } catch (error) {
-      console.error('Error creating playlist:', error);
+      logError('Error creating playlist:', error);
       this._showToast('Failed to create playlist');
     } finally {
       this._saving = false;
@@ -233,8 +298,12 @@ export class MopidyPlaylistCard extends LitElement {
 
   private async _onDeletePlaylist(e: CustomEvent) {
     const { playlist } = e.detail;
+    log('_onDeletePlaylist called for:', playlist);
     
-    if (!this._confirmDialog) return;
+    if (!this._confirmDialog) {
+      log('Confirm dialog not available');
+      return;
+    }
     
     this._confirmDialog.title = 'Delete Playlist';
     this._confirmDialog.message = `Are you sure you want to delete "${playlist.name}"? This cannot be undone.`;
@@ -242,6 +311,7 @@ export class MopidyPlaylistCard extends LitElement {
     this._confirmDialog.confirmText = 'Delete';
     
     const confirmed = await this._confirmDialog.show();
+    log('Delete confirmation result:', confirmed);
     if (!confirmed) return;
 
     try {
@@ -255,45 +325,50 @@ export class MopidyPlaylistCard extends LitElement {
       
       await this._loadPlaylists();
     } catch (error) {
-      console.error('Error deleting playlist:', error);
+      logError('Error deleting playlist:', error);
       this._showToast('Failed to delete playlist');
     }
   }
 
   private _onSelectPlaylist(e: CustomEvent) {
     const { playlist } = e.detail;
+    log('_onSelectPlaylist:', playlist);
     this._loadPlaylistDetail(playlist.uri);
   }
 
   private _onBackToList() {
+    log('_onBackToList called');
     this._view = 'list';
     this._selectedPlaylist = null;
   }
 
   private async _onPlayPlaylist(e: CustomEvent) {
     const { playlist } = e.detail;
+    log('_onPlayPlaylist:', playlist);
     try {
       await this._service?.playPlaylist(playlist.uri);
       this._showToast(`Playing "${playlist.name}"`);
     } catch (error) {
-      console.error('Error playing playlist:', error);
+      logError('Error playing playlist:', error);
       this._showToast('Failed to play playlist');
     }
   }
 
   private async _onPlayTrack(e: CustomEvent) {
     const { track } = e.detail;
+    log('_onPlayTrack:', track);
     try {
       await this._service?.playTrack(track.uri);
       this._showToast(`Playing "${track.name}"`);
     } catch (error) {
-      console.error('Error playing track:', error);
+      logError('Error playing track:', error);
       this._showToast('Failed to play track');
     }
   }
 
   private async _onRemoveTrack(e: CustomEvent) {
     const { index, tracks } = e.detail;
+    log('_onRemoveTrack called, index:', index, 'remaining tracks:', tracks.length);
     if (!this._selectedPlaylist) return;
 
     this._saving = true;
@@ -305,7 +380,7 @@ export class MopidyPlaylistCard extends LitElement {
       };
       this._showToast('Track removed');
     } catch (error) {
-      console.error('Error removing track:', error);
+      logError('Error removing track:', error);
       this._showToast('Failed to remove track');
     } finally {
       this._saving = false;
@@ -314,6 +389,7 @@ export class MopidyPlaylistCard extends LitElement {
 
   private async _onSaveChanges(e: CustomEvent) {
     const { playlist, tracks } = e.detail;
+    log('_onSaveChanges called, playlist:', playlist, 'tracks:', tracks.length);
     if (!playlist) return;
 
     this._saving = true;
@@ -333,7 +409,7 @@ export class MopidyPlaylistCard extends LitElement {
       
       this._showToast('Playlist saved');
     } catch (error) {
-      console.error('Error saving playlist:', error);
+      logError('Error saving playlist:', error);
       this._showToast('Failed to save playlist');
     } finally {
       this._saving = false;
@@ -341,11 +417,13 @@ export class MopidyPlaylistCard extends LitElement {
   }
 
   private _onAddTracks(_e: CustomEvent) {
+    log('_onAddTracks called, switching to search view');
     this._view = 'search';
   }
 
   private async _onAddTrack(e: CustomEvent) {
     const { track } = e.detail;
+    log('_onAddTrack called, track:', track);
     if (!this._selectedPlaylist) return;
 
     try {
@@ -354,28 +432,32 @@ export class MopidyPlaylistCard extends LitElement {
       // Reload playlist
       await this._loadPlaylistDetail(this._selectedPlaylist.uri);
     } catch (error) {
-      console.error('Error adding track:', error);
+      logError('Error adding track:', error);
       this._showToast('Failed to add track');
     }
   }
 
   private async _onSearch(e: CustomEvent) {
     const { query } = e.detail;
+    log('_onSearch called, query:', query);
     // For now, we'll use the media browser to search
     // This would need to be implemented based on how Mopidy exposes search
-    console.log('Search query:', query);
     // TODO: Implement search through media browser
   }
 
   private _onCloseSearch() {
+    log('_onCloseSearch called');
     this._view = 'detail';
   }
 
   setConfig(config: PlaylistCardConfig) {
+    log('setConfig called with:', config);
     if (!config.entity) {
+      logError('Entity is required in config');
       throw new Error('Entity is required');
     }
     this.config = config;
+    log('Config set successfully');
   }
 
   getCardSize() {
@@ -383,11 +465,15 @@ export class MopidyPlaylistCard extends LitElement {
   }
 
   render() {
+    log('render() called, view:', this._view, 'config:', this.config ? 'present' : 'missing');
+    
     if (!this.config) {
+      log('No config, showing error');
       return html`<ha-card><div class="error">Configuration error</div></ha-card>`;
     }
 
     const title = this.config.title || 'Playlist Manager';
+    log('Rendering with title:', title, 'playlists:', this._playlists.length, 'queue:', this._queue.length);
 
     return html`
       <ha-card>

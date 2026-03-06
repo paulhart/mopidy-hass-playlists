@@ -1,6 +1,18 @@
 import type { HomeAssistant, BrowseMedia } from '../types/home-assistant';
 import type { Playlist, PlaylistDetail, Track, QueueItem } from '../models/playlist';
 
+const DEBUG = true;
+
+function log(...args: unknown[]) {
+  if (DEBUG) {
+    console.log('[MopidyPlaylistCard]', ...args);
+  }
+}
+
+function logError(...args: unknown[]) {
+  console.error('[MopidyPlaylistCard]', ...args);
+}
+
 /**
  * Service wrapper for Mopidy playlist operations
  * Communicates with the mopidyhass integration through Home Assistant services
@@ -14,6 +26,7 @@ export class MopidyService {
   ) {
     // Extract entity name without domain for service calls
     this.entityId = entity;
+    log('MopidyService constructed with entity:', entity);
   }
 
   /**
@@ -37,7 +50,14 @@ export class MopidyService {
     service: string,
     data: Record<string, unknown> = {}
   ): Promise<void> {
-    await this.hass.callService(this.serviceDomain, service, data);
+    log('Calling service:', this.serviceDomain, '.', service, 'with data:', data);
+    try {
+      await this.hass.callService(this.serviceDomain, service, data);
+      log('Service call successful:', service);
+    } catch (error) {
+      logError('Service call failed:', service, error);
+      throw error;
+    }
   }
 
   /**
@@ -47,37 +67,70 @@ export class MopidyService {
     mediaContentId?: string,
     mediaContentType?: string
   ): Promise<BrowseMedia> {
-    return await this.hass.callWS<BrowseMedia>({
-      type: 'media_player/browse_media',
-      entity_id: this.entityId,
-      media_content_id: mediaContentId,
-      media_content_type: mediaContentType,
-    });
+    log('browseMedia called with:', { mediaContentId, mediaContentType });
+    try {
+      const result = await this.hass.callWS<BrowseMedia>({
+        type: 'media_player/browse_media',
+        entity_id: this.entityId,
+        media_content_id: mediaContentId,
+        media_content_type: mediaContentType,
+      });
+      log('browseMedia result:', result);
+      return result;
+    } catch (error) {
+      logError('browseMedia failed:', error);
+      throw error;
+    }
   }
 
   /**
    * Get all playlists
    */
   async getPlaylists(): Promise<Playlist[]> {
+    log('getPlaylists called');
     try {
       const result = await this.browseMedia();
+      log('Root browse result:', result);
       
       // Look for playlists in the browse result
       const playlists: Playlist[] = [];
       
       if (result.children) {
+        log('Root has', result.children.length, 'children:');
+        result.children.forEach((child, index) => {
+          log(`  Child ${index}:`, {
+            title: child.title,
+            media_content_id: child.media_content_id,
+            media_content_type: child.media_content_type,
+            can_play: child.can_play,
+            can_expand: child.can_expand,
+            children_media_class: child.children_media_class,
+            media_class: child.media_class,
+          });
+        });
+        
         for (const child of result.children) {
           // Check if this is a playlists container
-          if (child.media_content_id?.includes('playlists') || 
-              child.title?.toLowerCase() === 'playlists') {
+          const isPlaylistsContainer = 
+            child.media_content_id?.includes('playlists') || 
+            child.title?.toLowerCase() === 'playlists';
+          
+          log('Checking child for playlists:', child.title, 'isPlaylistsContainer:', isPlaylistsContainer);
+          
+          if (isPlaylistsContainer) {
+            log('Found playlists container, browsing into it...');
             // Browse into playlists
             const playlistsResult = await this.browseMedia(
               child.media_content_id,
               child.media_content_type
             );
             
+            log('Playlists container result:', playlistsResult);
+            
             if (playlistsResult.children) {
+              log('Found', playlistsResult.children.length, 'items in playlists container');
               for (const playlist of playlistsResult.children) {
+                log('Adding playlist:', playlist.title, 'uri:', playlist.media_content_id);
                 playlists.push({
                   uri: playlist.media_content_id || '',
                   name: playlist.title,
@@ -87,11 +140,14 @@ export class MopidyService {
             }
           }
         }
+      } else {
+        log('Root result has no children');
       }
       
+      log('getPlaylists returning', playlists.length, 'playlists');
       return playlists;
     } catch (error) {
-      console.error('Error fetching playlists:', error);
+      logError('Error fetching playlists:', error);
       return [];
     }
   }
@@ -100,34 +156,44 @@ export class MopidyService {
    * Get a specific playlist with track details
    */
   async getPlaylist(uri: string): Promise<PlaylistDetail | null> {
+    log('getPlaylist called with uri:', uri);
     try {
       const result = await this.browseMedia(uri);
+      log('Playlist browse result:', result);
       
       const tracks: Track[] = [];
       let trackNo = 1;
       
       if (result.children) {
+        log('Playlist has', result.children.length, 'tracks');
         for (const child of result.children) {
-          tracks.push({
+          const track: Track = {
             uri: child.media_content_id || '',
             name: child.title,
             artists: this.extractArtists(child),
             album: this.extractAlbum(child),
             duration: this.extractDuration(child),
             trackNo: trackNo++,
-          });
+          };
+          log('Track', trackNo - 1, ':', track);
+          tracks.push(track);
         }
+      } else {
+        log('Playlist has no children/tracks');
       }
       
-      return {
+      const playlistDetail: PlaylistDetail = {
         uri,
         name: result.title,
         tracks,
         trackCount: tracks.length,
         duration: this.calculateTotalDuration(tracks),
       };
+      
+      log('getPlaylist returning:', playlistDetail);
+      return playlistDetail;
     } catch (error) {
-      console.error('Error fetching playlist:', error);
+      logError('Error fetching playlist:', error);
       return null;
     }
   }
@@ -136,24 +202,43 @@ export class MopidyService {
    * Get the current queue
    */
   async getQueue(): Promise<QueueItem[]> {
+    log('getQueue called for entity:', this.entityId);
     try {
       const entity = this.hass.states[this.entityId];
-      if (!entity) return [];
+      log('Entity state:', entity);
       
+      if (!entity) {
+        log('Entity not found in hass.states');
+        return [];
+      }
+      
+      log('Entity attributes:', entity.attributes);
       const queue = entity.attributes.queue as unknown;
-      if (!Array.isArray(queue)) return [];
+      log('Queue attribute:', queue, 'isArray:', Array.isArray(queue));
       
-      return queue.map((item: Record<string, unknown>, index: number) => ({
-        uri: item.uri as string || '',
-        name: item.title as string || item.name as string || 'Unknown',
-        artists: item.artist as string[] || (item.artist ? [item.artist as string] : []),
-        album: item.album as string,
-        duration: item.duration as number,
-        position: index,
-        trackId: (item.track_id as string | number) ?? index,
-      }));
+      if (!Array.isArray(queue)) {
+        log('Queue is not an array, returning empty');
+        return [];
+      }
+      
+      const queueItems = queue.map((item: Record<string, unknown>, index: number) => {
+        const queueItem: QueueItem = {
+          uri: item.uri as string || '',
+          name: item.title as string || item.name as string || 'Unknown',
+          artists: item.artist as string[] || (item.artist ? [item.artist as string] : []),
+          album: item.album as string,
+          duration: item.duration as number,
+          position: index,
+          trackId: (item.track_id as string | number) ?? index,
+        };
+        log('Queue item', index, ':', queueItem);
+        return queueItem;
+      });
+      
+      log('getQueue returning', queueItems.length, 'items');
+      return queueItems;
     } catch (error) {
-      console.error('Error fetching queue:', error);
+      logError('Error fetching queue:', error);
       return [];
     }
   }
@@ -162,6 +247,7 @@ export class MopidyService {
    * Create a new empty playlist
    */
   async createPlaylist(name: string, uriScheme?: string): Promise<void> {
+    log('createPlaylist called:', { name, uriScheme });
     await this.callService(`${this.entityName}_create_playlist`, {
       name,
       uri_scheme: uriScheme,
@@ -172,6 +258,7 @@ export class MopidyService {
    * Delete a playlist
    */
   async deletePlaylist(uri: string): Promise<void> {
+    log('deletePlaylist called:', { uri });
     await this.callService(`${this.entityName}_delete_playlist`, {
       uri,
     });
@@ -181,6 +268,7 @@ export class MopidyService {
    * Rename a playlist
    */
   async renamePlaylist(uri: string, name: string): Promise<void> {
+    log('renamePlaylist called:', { uri, name });
     await this.callService(`${this.entityName}_rename_playlist`, {
       uri,
       name,
@@ -195,6 +283,7 @@ export class MopidyService {
     trackUris: string[],
     position?: number
   ): Promise<void> {
+    log('addToPlaylist called:', { playlistUri, trackUris, position });
     await this.callService(`${this.entityName}_add_to_playlist`, {
       playlist_uri: playlistUri,
       track_uris: trackUris,
@@ -209,6 +298,7 @@ export class MopidyService {
     playlistUri: string,
     positions: number[]
   ): Promise<void> {
+    log('removeFromPlaylist called:', { playlistUri, positions });
     await this.callService(`${this.entityName}_remove_from_playlist`, {
       playlist_uri: playlistUri,
       positions,
@@ -224,6 +314,7 @@ export class MopidyService {
     end: number,
     newPosition: number
   ): Promise<void> {
+    log('moveInPlaylist called:', { playlistUri, start, end, newPosition });
     await this.callService(`${this.entityName}_move_in_playlist`, {
       playlist_uri: playlistUri,
       start,
@@ -236,6 +327,7 @@ export class MopidyService {
    * Clear all tracks from a playlist
    */
   async clearPlaylist(uri: string): Promise<void> {
+    log('clearPlaylist called:', { uri });
     await this.callService(`${this.entityName}_clear_playlist`, {
       uri,
     });
@@ -245,6 +337,7 @@ export class MopidyService {
    * Save current queue as a new playlist
    */
   async saveQueueToPlaylist(name: string, uriScheme?: string): Promise<void> {
+    log('saveQueueToPlaylist called:', { name, uriScheme });
     await this.callService(`${this.entityName}_save_queue_to_playlist`, {
       name,
       uri_scheme: uriScheme,
@@ -255,6 +348,7 @@ export class MopidyService {
    * Play a playlist
    */
   async playPlaylist(uri: string): Promise<void> {
+    log('playPlaylist called:', { uri });
     await this.hass.callService('media_player', 'play_media', {
       entity_id: this.entityId,
       media_content_id: uri,
@@ -266,6 +360,7 @@ export class MopidyService {
    * Play a specific track
    */
   async playTrack(uri: string): Promise<void> {
+    log('playTrack called:', { uri });
     await this.hass.callService('media_player', 'play_media', {
       entity_id: this.entityId,
       media_content_id: uri,

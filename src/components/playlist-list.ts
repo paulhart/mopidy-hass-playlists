@@ -3,6 +3,14 @@ import { customElement, property } from 'lit/decorators.js';
 import { sharedStyles } from '../styles/shared-styles';
 import type { Playlist } from '../models/playlist';
 
+const DEBUG = true;
+
+function log(...args: unknown[]) {
+  if (DEBUG) {
+    console.log('[PlaylistList]', ...args);
+  }
+}
+
 /**
  * Playlist list component - displays all playlists
  */
@@ -104,6 +112,7 @@ export class PlaylistList extends LitElement {
   @property({ type: Boolean }) loading = false;
 
   private _onPlaylistClick(playlist: Playlist) {
+    log('Playlist clicked:', playlist);
     this.dispatchEvent(new CustomEvent('select-playlist', {
       detail: { playlist },
       bubbles: true,
@@ -113,6 +122,7 @@ export class PlaylistList extends LitElement {
 
   private _onDeleteClick(e: Event, playlist: Playlist) {
     e.stopPropagation();
+    log('Delete clicked for playlist:', playlist);
     this.dispatchEvent(new CustomEvent('delete-playlist', {
       detail: { playlist },
       bubbles: true,
@@ -122,6 +132,7 @@ export class PlaylistList extends LitElement {
 
   private _onPlayClick(e: Event, playlist: Playlist) {
     e.stopPropagation();
+    log('Play clicked for playlist:', playlist);
     this.dispatchEvent(new CustomEvent('play-playlist', {
       detail: { playlist },
       bubbles: true,
@@ -130,7 +141,10 @@ export class PlaylistList extends LitElement {
   }
 
   render() {
+    log('render() called, loading:', this.loading, 'playlists count:', this.playlists.length);
+    
     if (this.loading) {
+      log('Rendering loading state');
       return html`
         <div class="loading">
           <ha-circular-progress active></ha-circular-progress>
@@ -139,6 +153,7 @@ export class PlaylistList extends LitElement {
     }
 
     if (this.playlists.length === 0) {
+      log('Rendering empty state - no playlists');
       return html`
         <div class="empty-state">
           <ha-icon icon="mdi:playlist-music"></ha-icon>
@@ -148,6 +163,7 @@ export class PlaylistList extends LitElement {
       `;
     }
 
+    log('Rendering', this.playlists.length, 'playlists');
     return html`
       <div class="list">
         ${this.playlists.map((playlist) => html`
