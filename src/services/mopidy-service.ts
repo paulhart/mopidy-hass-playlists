@@ -200,41 +200,39 @@ export class MopidyService {
   }
 
   /**
-   * Get the current queue
+   * Get the current queue by browsing the queue: media content
    */
   async getQueue(): Promise<QueueItem[]> {
     log('getQueue called for entity:', this.entityId);
     try {
-      const entity = this.hass.states[this.entityId];
-      log('Entity state:', entity);
+      // Use media browser to get queue - browse the "queue:" content ID
+      const result = await this.browseMedia('queue:', 'playlist');
+      log('Queue browse result:', result);
       
-      if (!entity) {
-        log('Entity not found in hass.states');
+      if (!result || !result.children) {
+        log('Queue browse returned no children');
         return [];
       }
       
-      log('Entity attributes:', entity.attributes);
-      const queue = entity.attributes.queue as unknown;
-      log('Queue attribute:', queue, 'isArray:', Array.isArray(queue));
+      log('Queue has', result.children.length, 'items');
       
-      if (!Array.isArray(queue)) {
-        log('Queue is not an array, returning empty');
-        return [];
-      }
+      const queueItems: QueueItem[] = [];
+      let position = 0;
       
-      const queueItems = queue.map((item: Record<string, unknown>, index: number) => {
+      for (const child of result.children) {
         const queueItem: QueueItem = {
-          uri: item.uri as string || '',
-          name: item.title as string || item.name as string || 'Unknown',
-          artists: item.artist as string[] || (item.artist ? [item.artist as string] : []),
-          album: item.album as string,
-          duration: item.duration as number,
-          position: index,
-          trackId: (item.track_id as string | number) ?? index,
+          uri: child.media_content_id || '',
+          name: child.title,
+          artists: this.extractArtists(child),
+          album: this.extractAlbum(child),
+          duration: this.extractDuration(child),
+          position: position,
+          trackId: position, // Use position as track ID since we don't have the actual ID
         };
-        log('Queue item', index, ':', queueItem);
-        return queueItem;
-      });
+        log('Queue item', position, ':', queueItem);
+        queueItems.push(queueItem);
+        position++;
+      }
       
       log('getQueue returning', queueItems.length, 'items');
       return queueItems;
