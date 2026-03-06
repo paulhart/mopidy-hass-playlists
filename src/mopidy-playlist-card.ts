@@ -279,13 +279,30 @@ export class MopidyPlaylistCard extends LitElement {
 
     this._saving = true;
     try {
-      if (result.source === 'queue') {
-        log('Creating playlist from queue:', result.name);
-        await this._service?.saveQueueToPlaylist(result.name);
-      } else {
-        log('Creating empty playlist:', result.name);
-        await this._service?.createPlaylist(result.name);
+      // First create the empty playlist
+      log('Creating playlist:', result.name);
+      await this._service?.createPlaylist(result.name);
+      
+      // If creating from queue, add queue tracks to the new playlist
+      if (result.source === 'queue' && this._queue.length > 0) {
+        log('Adding', this._queue.length, 'queue tracks to new playlist');
+        // Wait a moment for the playlist to be created
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Reload playlists to get the new playlist URI
+        await this._loadPlaylists();
+        const newPlaylist = this._playlists.find(p => p.name === result.name);
+        
+        if (newPlaylist) {
+          log('Found new playlist:', newPlaylist.uri);
+          const trackUris = this._queue.map(item => item.uri);
+          await this._service?.addToPlaylist(newPlaylist.uri, trackUris);
+          log('Added queue tracks to playlist');
+        } else {
+          logError('Could not find newly created playlist');
+        }
       }
+      
       this._showToast(`Playlist "${result.name}" created`);
       await this._loadPlaylists();
     } catch (error) {
