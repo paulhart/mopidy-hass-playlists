@@ -161,6 +161,7 @@ export class MopidyService {
     try {
       const result = await this.browseMedia(uri, mediaContentType);
       log('Playlist browse result:', result);
+      log('Playlist not_shown:', result.not_shown, 'children count:', result.children?.length);
       
       const tracks: Track[] = [];
       let trackNo = 1;
@@ -181,6 +182,11 @@ export class MopidyService {
         }
       } else {
         log('Playlist has no children/tracks');
+      }
+      
+      // Log warning if there are more tracks not shown
+      if (result.not_shown && result.not_shown > 0) {
+        logError('WARNING:', result.not_shown, 'tracks not shown due to pagination limit');
       }
       
       const playlistDetail: PlaylistDetail = {

@@ -58,9 +58,11 @@ export interface BrowseMedia {
   media_content_id: string;
   can_play: boolean;
   can_expand: boolean;
+  can_search?: boolean;
   children_media_class?: string;
   children?: BrowseMedia[];
   thumbnail?: string | null;
+  not_shown?: number;
 }
 
 export interface BrowseMediaQuery {
