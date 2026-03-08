@@ -992,7 +992,7 @@ class So {
   async getQueue() {
     _("getQueue called for entity:", this.entityId);
     try {
-      const t = await this.browseMedia("queue:");
+      const t = await this.browseMedia("queue:", "playlist");
       if (_("Queue browse result:", t), !t || !t.children)
         return _("Queue browse returned no children"), [];
       _("Queue has", t.children.length, "items");

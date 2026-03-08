@@ -221,8 +221,8 @@ export class MopidyService {
     log('getQueue called for entity:', this.entityId);
     try {
       // Use media browser to get queue - browse the "queue:" content ID
-      // Try without content type first, as the queue browser may handle it differently
-      const result = await this.browseMedia('queue:');
+      // Both media_content_id and media_content_type must be provided together
+      const result = await this.browseMedia('queue:', 'playlist');
       log('Queue browse result:', result);
       
       if (!result || !result.children) {
