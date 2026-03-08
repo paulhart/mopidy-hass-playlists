@@ -155,6 +155,7 @@ export class TrackSearch extends LitElement {
   }
 
   private _performSearch() {
+    console.log('[TrackSearch] _performSearch called with query:', this._searchQuery);
     this.dispatchEvent(new CustomEvent('search', {
       detail: { query: this._searchQuery },
       bubbles: true,

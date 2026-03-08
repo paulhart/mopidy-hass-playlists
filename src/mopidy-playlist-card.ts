@@ -459,13 +459,23 @@ export class MopidyPlaylistCard extends LitElement {
   private async _onSearch(e: CustomEvent) {
     const { query } = e.detail;
     log('_onSearch called, query:', query);
+    log('  service available:', !!this._service);
+    log('  query trimmed:', query?.trim());
     
-    if (!this._service || !query.trim()) {
+    if (!this._service) {
+      logError('Search aborted - no service available');
+      this._searchResults = [];
+      return;
+    }
+    
+    if (!query?.trim()) {
+      log('Search aborted - empty query');
       this._searchResults = [];
       return;
     }
     
     this._searching = true;
+    log('Setting searching=true, calling searchTracks...');
     try {
       this._searchResults = await this._service.searchTracks(query);
       log('Search results:', this._searchResults.length, 'tracks');
@@ -474,6 +484,7 @@ export class MopidyPlaylistCard extends LitElement {
       this._searchResults = [];
     } finally {
       this._searching = false;
+      log('Search complete, searching=false');
     }
   }
 
