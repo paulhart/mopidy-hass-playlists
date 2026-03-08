@@ -47,7 +47,7 @@ export class TrackSearch extends LitElement {
     }
 
     .search-results, .queue-list {
-      max-height: 300px;
+      max-height: 500px;
       overflow-y: auto;
     }
 

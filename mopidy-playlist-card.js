@@ -2844,7 +2844,7 @@ lt.styles = [bt, dt`
     }
 
     .track-list {
-      max-height: 400px;
+      max-height: 500px;
       overflow-y: auto;
     }
 
@@ -3246,7 +3246,7 @@ vt.styles = [bt, dt`
     }
 
     .search-results, .queue-list {
-      max-height: 300px;
+      max-height: 500px;
       overflow-y: auto;
     }
 

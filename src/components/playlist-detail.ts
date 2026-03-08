@@ -90,7 +90,7 @@ export class PlaylistDetailComponent extends LitElement {
     }
 
     .track-list {
-      max-height: 400px;
+      max-height: 500px;
       overflow-y: auto;
     }
 
