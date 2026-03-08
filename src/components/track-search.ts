@@ -131,10 +131,10 @@ export class TrackSearch extends LitElement {
 
   @property({ type: Array }) queue: QueueItem[] = [];
   @property({ type: Boolean }) searching = false;
+  @property({ type: Array }) searchResults: Track[] = [];
 
   @state() private _searchQuery = '';
   @state() private _activeTab: 'queue' | 'search' = 'queue';
-  @state() private _searchResults: Track[] = [];
 
   private _searchTimeout?: number;
 
@@ -151,8 +151,6 @@ export class TrackSearch extends LitElement {
       this._searchTimeout = window.setTimeout(() => {
         this._performSearch();
       }, 300);
-    } else {
-      this._searchResults = [];
     }
   }
 
@@ -186,10 +184,6 @@ export class TrackSearch extends LitElement {
     });
   }
 
-  public setSearchResults(results: Track[]) {
-    this._searchResults = results;
-  }
-
   render() {
     return html`
       <div class="search-header">
@@ -211,9 +205,9 @@ export class TrackSearch extends LitElement {
               <ha-circular-progress active></ha-circular-progress>
               <p>Searching...</p>
             </div>
-          ` : this._searchResults.length > 0 ? html`
+          ` : this.searchResults.length > 0 ? html`
             <div class="section-title">Search Results</div>
-            ${this._searchResults.map((track) => html`
+            ${this.searchResults.map((track) => html`
               <div class="result-item">
                 <div class="result-info">
                   <div class="result-title">${track.name}</div>

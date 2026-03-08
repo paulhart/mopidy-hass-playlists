@@ -390,6 +390,54 @@ export class MopidyService {
     });
   }
 
+  /**
+   * Search for tracks in the media library
+   */
+  async searchTracks(query: string): Promise<Track[]> {
+    log('searchTracks called with query:', query);
+    try {
+      // Use Home Assistant's media search API
+      const result = await this.hass.callWS<BrowseMedia>({
+        type: 'media_player/browse_media',
+        entity_id: this.entityId,
+        media_content_type: 'search',
+        media_content_id: query,
+      });
+      log('Search result:', result);
+      
+      const tracks: Track[] = [];
+      
+      if (result.children) {
+        log('Search returned', result.children.length, 'results');
+        for (const child of result.children) {
+          const track: Track = {
+            uri: child.media_content_id || '',
+            name: child.title,
+            artists: this.extractArtists(child),
+            album: this.extractAlbum(child),
+            duration: this.extractDuration(child),
+          };
+          tracks.push(track);
+        }
+      } else {
+        log('Search returned no children');
+      }
+      
+      log('searchTracks returning', tracks.length, 'tracks');
+      return tracks;
+    } catch (error: unknown) {
+      logError('Search failed:');
+      logError('  Error type:', typeof error);
+      logError('  Error value:', error);
+      if (error && typeof error === 'object') {
+        const err = error as Record<string, unknown>;
+        if ('code' in err) logError('  Error code:', err.code);
+        if ('message' in err) logError('  Error message:', err.message);
+      }
+      return [];
+    }
+  }
+
   // Helper methods
 
   private extractArtists(media: BrowseMedia): string[] {

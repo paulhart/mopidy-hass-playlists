@@ -146,9 +146,11 @@ export class MopidyPlaylistCard extends LitElement {
   @state() private _view: View = 'list';
   @state() private _loading = false;
   @state() private _saving = false;
+  @state() private _searching = false;
   @state() private _playlists: Playlist[] = [];
   @state() private _selectedPlaylist: PlaylistDetail | null = null;
   @state() private _queue: QueueItem[] = [];
+  @state() private _searchResults: Track[] = [];
   @state() private _toast: string | null = null;
 
   @query('mopidy-confirm-dialog') private _confirmDialog!: ConfirmDialogElement;
@@ -457,9 +459,22 @@ export class MopidyPlaylistCard extends LitElement {
   private async _onSearch(e: CustomEvent) {
     const { query } = e.detail;
     log('_onSearch called, query:', query);
-    // For now, we'll use the media browser to search
-    // This would need to be implemented based on how Mopidy exposes search
-    // TODO: Implement search through media browser
+    
+    if (!this._service || !query.trim()) {
+      this._searchResults = [];
+      return;
+    }
+    
+    this._searching = true;
+    try {
+      this._searchResults = await this._service.searchTracks(query);
+      log('Search results:', this._searchResults.length, 'tracks');
+    } catch (error) {
+      logError('Search error:', error);
+      this._searchResults = [];
+    } finally {
+      this._searching = false;
+    }
   }
 
   private _onCloseSearch() {
@@ -542,6 +557,8 @@ export class MopidyPlaylistCard extends LitElement {
             <div class="search-content">
               <mopidy-track-search
                 .queue=${this._queue}
+                .searching=${this._searching}
+                .searchResults=${this._searchResults}
                 @add-track=${this._onAddTrack}
                 @search=${this._onSearch}
               ></mopidy-track-search>
