@@ -77,8 +77,17 @@ export class MopidyService {
       });
       log('browseMedia result:', result);
       return result;
-    } catch (error) {
-      logError('browseMedia failed:', JSON.stringify(error, null, 2));
+    } catch (error: unknown) {
+      // Log comprehensive error information
+      logError('browseMedia failed:');
+      logError('  Error type:', typeof error);
+      logError('  Error value:', error);
+      if (error && typeof error === 'object') {
+        logError('  Error keys:', Object.keys(error));
+        const err = error as Record<string, unknown>;
+        if ('code' in err) logError('  Error code:', err.code);
+        if ('message' in err) logError('  Error message:', err.message);
+      }
       throw error;
     }
   }
@@ -243,8 +252,15 @@ export class MopidyService {
       
       log('getQueue returning', queueItems.length, 'items');
       return queueItems;
-    } catch (error) {
-      logError('Error fetching queue:', JSON.stringify(error, null, 2));
+    } catch (error: unknown) {
+      logError('Error fetching queue:');
+      logError('  Error type:', typeof error);
+      logError('  Error value:', error);
+      if (error && typeof error === 'object') {
+        const err = error as Record<string, unknown>;
+        if ('code' in err) logError('  Error code:', err.code);
+        if ('message' in err) logError('  Error message:', err.message);
+      }
       return [];
     }
   }
