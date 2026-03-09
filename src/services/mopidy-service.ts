@@ -1,4 +1,4 @@
-import type { HomeAssistant, BrowseMedia } from '../types/home-assistant';
+import type { HomeAssistant, BrowseMedia, SearchQuery, SearchResult, SearchTrack } from '../types/home-assistant';
 import type { Playlist, PlaylistDetail, Track, QueueItem } from '../models/playlist';
 
 const DEBUG = true;
@@ -391,37 +391,23 @@ export class MopidyService {
   }
 
   /**
-   * Search for tracks in the media library
+   * Search for tracks in the media library using the mopidyhass search service
    */
-  async searchTracks(query: string): Promise<Track[]> {
-    log('searchTracks called with query:', query);
+  async searchTracks(query: string, limit?: number): Promise<Track[]> {
+    log('searchTracks called with query:', query, 'limit:', limit);
     try {
-      // Use Home Assistant's media search API
-      const result = await this.hass.callWS<BrowseMedia>({
-        type: 'media_player/browse_media',
-        entity_id: this.entityId,
-        media_content_type: 'search',
-        media_content_id: query,
-      });
+      const result = await this.searchLibrary({ query, limit });
       log('Search result:', result);
       
-      const tracks: Track[] = [];
-      
-      if (result.children) {
-        log('Search returned', result.children.length, 'results');
-        for (const child of result.children) {
-          const track: Track = {
-            uri: child.media_content_id || '',
-            name: child.title,
-            artists: this.extractArtists(child),
-            album: this.extractAlbum(child),
-            duration: this.extractDuration(child),
-          };
-          tracks.push(track);
-        }
-      } else {
-        log('Search returned no children');
-      }
+      // Convert SearchTrack[] to Track[]
+      const tracks: Track[] = result.tracks.map((st: SearchTrack) => ({
+        uri: st.uri,
+        name: st.name,
+        artists: st.artists,
+        album: st.album,
+        duration: st.duration,
+        trackNo: st.track_no,
+      }));
       
       log('searchTracks returning', tracks.length, 'tracks');
       return tracks;
@@ -435,6 +421,42 @@ export class MopidyService {
         if ('message' in err) logError('  Error message:', err.message);
       }
       return [];
+    }
+  }
+
+  /**
+   * Search the library using the mopidyhass search service
+   * Returns full search results with albums, artists, and tracks
+   */
+  async searchLibrary(searchQuery: SearchQuery): Promise<SearchResult> {
+    log('searchLibrary called with query:', searchQuery);
+    try {
+      // Call the search service via WebSocket
+      const result = await this.hass.callWS<{ response: SearchResult }>({
+        type: 'call_service',
+        domain: this.serviceDomain,
+        service: `${this.entityName}_search_library`,
+        service_data: {
+          query: searchQuery.query,
+          exact: searchQuery.exact ?? false,
+          limit: searchQuery.limit ?? 50,
+        },
+        return_response: true,
+      });
+      log('searchLibrary result:', result);
+      
+      // The result from call_service with return_response contains a 'response' key
+      return result.response;
+    } catch (error: unknown) {
+      logError('searchLibrary failed:');
+      logError('  Error type:', typeof error);
+      logError('  Error value:', error);
+      if (error && typeof error === 'object') {
+        const err = error as Record<string, unknown>;
+        if ('code' in err) logError('  Error code:', err.code);
+        if ('message' in err) logError('  Error message:', err.message);
+      }
+      throw error;
     }
   }
 

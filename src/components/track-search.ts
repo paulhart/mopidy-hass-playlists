@@ -227,8 +227,7 @@ export class TrackSearch extends LitElement {
               <ha-icon icon="mdi:magnify"></ha-icon>
               <p>No tracks found</p>
               <p style="font-size: 0.85em; margin-top: 8px;">
-                Library search requires the mopidyhass integration to expose a search service.
-                Use the "Current Queue" tab to add tracks from your queue.
+                Try a different search term or use the "Current Queue" tab to add tracks from your queue.
               </p>
             </div>
           `}
