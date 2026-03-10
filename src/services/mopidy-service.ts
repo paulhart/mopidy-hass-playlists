@@ -37,6 +37,36 @@ export class MopidyService {
   }
 
   /**
+   * Get the safe service name suffix from the entity's friendly name
+   * Converts the friendly name to a safe form:
+   * - Lowercase
+   * - Spaces replaced with underscores
+   * - Special characters removed (only alphanumeric and underscores kept)
+   * - Multiple underscores collapsed to single
+   *
+   * Example: "Frank's Music" -> "franks_music"
+   */
+  private get safeServiceName(): string {
+    // Get the friendly name from the entity's attributes, fallback to entity name
+    const entity = this.hass.states[this.entityId];
+    const friendlyName = entity?.attributes?.friendly_name as string | undefined;
+    const name = friendlyName || this.entityName;
+    
+    log('safeServiceName: friendlyName=', friendlyName, 'entityName=', this.entityName, 'name=', name);
+    
+    // Convert to safe service name
+    const safeName = name
+      .toLowerCase()
+      .replace(/\s+/g, '_')           // Replace spaces with underscores
+      .replace(/[^a-z0-9_]/g, '')     // Remove special characters (keep only alphanumeric and underscore)
+      .replace(/_+/g, '_')            // Collapse multiple underscores to single
+      .replace(/^_|_$/g, '');         // Remove leading/trailing underscores
+    
+    log('safeServiceName result:', safeName);
+    return safeName;
+  }
+
+  /**
    * Get the service domain (mopidyhass)
    */
   private get serviceDomain(): string {
@@ -435,7 +465,7 @@ export class MopidyService {
       const result = await this.hass.callWS<{ response: SearchResult }>({
         type: 'call_service',
         domain: this.serviceDomain,
-        service: `${this.entityName}_search_library`,
+        service: `${this.safeServiceName}_search_library`,
         service_data: {
           query: searchQuery.query,
           exact: searchQuery.exact ?? false,
