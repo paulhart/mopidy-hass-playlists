@@ -461,22 +461,57 @@ export class MopidyService {
   async searchLibrary(searchQuery: SearchQuery): Promise<SearchResult> {
     log('searchLibrary called with query:', searchQuery);
     try {
-      // Call the search service via WebSocket
-      const result = await this.hass.callWS<{ response: SearchResult }>({
-        type: 'call_service',
-        domain: this.serviceDomain,
-        service: `${this.safeServiceName}_search_library`,
-        service_data: {
-          query: searchQuery.query,
-          exact: searchQuery.exact ?? false,
-          limit: searchQuery.limit ?? 50,
-        },
-        return_response: true,
+      // Call the search service directly - the service stores results that can be browsed
+      await this.callService(`${this.safeServiceName}_search_library`, {
+        query: searchQuery.query,
+        exact: searchQuery.exact ?? false,
+        limit: searchQuery.limit ?? 50,
       });
-      log('searchLibrary result:', result);
       
-      // The result from call_service with return_response contains a 'response' key
-      return result.response;
+      log('searchLibrary service call completed, browsing search results...');
+      
+      // Browse the search results via media browser
+      // The search service stores results at a searchable content ID
+      const searchResult = await this.browseMedia('search:', 'search');
+      log('searchLibrary browse result:', searchResult);
+      
+      // Convert browse results to SearchResult format
+      const result: SearchResult = {
+        albums: [],
+        artists: [],
+        tracks: [],
+      };
+      
+      if (searchResult.children) {
+        for (const child of searchResult.children) {
+          const contentType = child.media_content_type || child.media_class || '';
+          log('Processing search result child:', child.title, 'contentType:', contentType);
+          
+          if (contentType === 'album' || child.media_class === 'album') {
+            result.albums.push({
+              uri: child.media_content_id || '',
+              name: child.title,
+              artists: this.extractArtists(child),
+            });
+          } else if (contentType === 'artist' || child.media_class === 'artist') {
+            result.artists.push({
+              uri: child.media_content_id || '',
+              name: child.title,
+            });
+          } else if (contentType === 'track' || contentType === 'music' || child.media_class === 'track') {
+            result.tracks.push({
+              uri: child.media_content_id || '',
+              name: child.title,
+              artists: this.extractArtists(child),
+              album: this.extractAlbum(child),
+              duration: this.extractDuration(child),
+            });
+          }
+        }
+      }
+      
+      log('searchLibrary returning:', result);
+      return result;
     } catch (error: unknown) {
       logError('searchLibrary failed:');
       logError('  Error type:', typeof error);
